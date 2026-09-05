@@ -93,7 +93,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     id: "iip-self-01",
     title: "Full-Stack Web Development",
     type: "SELF_PLACED",
-    badgeText: "Direct Enrollment",
+    badgeText: "Virtual Internship",
     companyName: "Wingz Tech Academy",
     companyLogo: "⚡",
     duration: "8 Weeks (5 Days/Wk)",
@@ -234,7 +234,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     id: "iip-mentor-02",
     title: "AI & Machine Learning Engineering",
     type: "MENTOR_GUIDED",
-    badgeText: "Trainer Selected",
+    badgeText: "Mentored Internship",
     companyName: "DataCraft Labs",
     companyLogo: "🧠",
     duration: "8 Weeks (5 Days/Wk)",
@@ -346,7 +346,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     id: "iip-company-03",
     title: "Cloud Infrastructure & DevOps Engineering",
     type: "COMPANY_ASSISTED",
-    badgeText: "Eligibility Test Required",
+    badgeText: "Company Remote Internship",
     companyName: "Nexus Cloud Solutions",
     companyLogo: "☁️",
     duration: "8 Weeks (5 Days/Wk)",
@@ -451,6 +451,117 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
         task: "Present final Terraform & Kubernetes deployment showcase for industry certification.",
         deadlineDays: 7,
         resources: [{ id: "rc8", name: "Production Readiness Handbook", type: "DOC", url: "#" }]
+      }
+    ]
+  },
+  {
+    id: "iip-company-on-prem-04",
+    title: "Corporate Software Engineering",
+    type: "COMPANY_ASSISTED",
+    badgeText: "Company On premises Internship",
+    companyName: "Enterprise Systems Ltd",
+    companyLogo: "🏢",
+    duration: "8 Weeks (5 Days/Wk)",
+    description: "In-office internship program. Work directly with experienced teams on real-world projects in a traditional office environment.",
+    enrollmentMode: "Competitive — Passed On-Site Interview",
+    mentorName: "David Chen",
+    mentorRole: "Engineering Manager @ Enterprise Systems",
+    orientationVideoUrl: "https://www.youtube.com/embed/2M-u6a7YmK4",
+    orientationVideoTitle: "Enterprise Systems On-Premises Internship Briefing",
+    rules: [
+      "Must be present at the office location 5 days a week.",
+      "Professional attire and conduct required.",
+      "Attend in-person daily standups and weekly sprint planning.",
+      "Official joint certification issued upon successful completion."
+    ],
+    quizQuestions: [
+      {
+        id: "qc4-1",
+        question: "What is the work model for this internship?",
+        options: [
+          "Fully remote",
+          "Hybrid, 2 days in office",
+          "Fully on-premises, 5 days a week",
+          "Flexible hours"
+        ],
+        correctAnswerIndex: 2
+      },
+      {
+        id: "qc4-2",
+        question: "How are daily standups conducted?",
+        options: [
+          "Via email",
+          "Through a virtual meeting link",
+          "In-person at the office",
+          "No standups required"
+        ],
+        correctAnswerIndex: 2
+      }
+    ],
+    weeks: [
+      {
+        weekNumber: 1,
+        title: "Onboarding & Environment Setup",
+        objective: "Get familiar with the office, team members, and set up the local development environment.",
+        task: "Complete corporate onboarding and configure local machine with necessary tools.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-1", name: "Employee Handbook", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 2,
+        title: "Codebase Familiarization & Bug Fixes",
+        objective: "Understand the main project architecture and resolve minor issues.",
+        task: "Pick up and resolve 3 low-priority bug tickets from the Jira backlog.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-2", name: "Architecture Overview", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 3,
+        title: "Feature Development Part 1",
+        objective: "Start working on a new feature module.",
+        task: "Implement the UI components for the assigned feature and write unit tests.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-3", name: "UI Design Guidelines", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 4,
+        title: "Feature Development Part 2",
+        objective: "Integrate the frontend components with backend APIs.",
+        task: "Connect the UI components to REST endpoints and handle data state.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-4", name: "API Documentation", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 5,
+        title: "Code Review & Refactoring",
+        objective: "Participate in code reviews and optimize the developed feature.",
+        task: "Present code in review meetings and refactor based on feedback.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-5", name: "Clean Code Practices", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 6,
+        title: "Testing & QA Coordination",
+        objective: "Work with QA team to ensure feature stability.",
+        task: "Write integration tests and assist QA in manual testing scenarios.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-6", name: "Testing Strategy", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 7,
+        title: "Deployment & Monitoring",
+        objective: "Learn the deployment process and monitor the application.",
+        task: "Assist in deploying the feature to the staging environment and setup monitoring alerts.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-7", name: "Deployment Runbook", type: "DOC", url: "#" }]
+      },
+      {
+        weekNumber: 8,
+        title: "Final Presentation & Handover",
+        objective: "Present the completed work and document the feature.",
+        task: "Deliver a final presentation to the department and write documentation for the feature.",
+        deadlineDays: 7,
+        resources: [{ id: "r4-8", name: "Presentation Template", type: "DOC", url: "#" }]
       }
     ]
   }

@@ -1,7 +1,7 @@
+import { ArrowRight, Award, CheckCircle2, Clock, HelpCircle, ShieldAlert, Sparkles, UserCheck, Users, Video } from 'lucide-react';
 import React from 'react';
 import { useInternship } from '../context/InternshipContext';
 import { InternshipProgram } from '../data/internshipsData';
-import { Users, UserCheck, ShieldAlert, CheckCircle2, ArrowRight, Clock, Award, Sparkles, Video, HelpCircle } from 'lucide-react';
 
 export const CatalogScreen: React.FC = () => {
   const { programs, setSelectedProgramById, setActiveView } = useInternship();
