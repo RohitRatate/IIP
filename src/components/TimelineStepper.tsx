@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useInternship } from '../context/InternshipContext';
-import { Check, Lock, Play, Sparkles } from 'lucide-react';
+import { Check, Lock, Play, Sparkles, Send } from 'lucide-react';
 
 interface TimelineStepperProps {
   activeWeekTab: number;
@@ -9,6 +9,7 @@ interface TimelineStepperProps {
 
 export const TimelineStepper: React.FC<TimelineStepperProps> = ({ activeWeekTab, setActiveWeekTab }) => {
   const { enrollment, selectedProgram } = useInternship();
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   return (
     <div className="glass-card" style={{ padding: '20px' }}>
@@ -75,10 +76,53 @@ export const TimelineStepper: React.FC<TimelineStepperProps> = ({ activeWeekTab,
               <div style={{ fontSize: '0.62rem', fontWeight: 700, color: labelColor, marginTop: '2px' }}>
                 {statusText}
               </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowTaskModal(true);
+                }}
+                style={{
+                  marginTop: '10px',
+                  padding: '5px 10px',
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: isLocked ? '#e2e8f0' : isCurrent ? 'linear-gradient(135deg, #1a202c 0%, #2d3748 100%)' : 'linear-gradient(135deg, #8dc63f 0%, #75a831 100%)',
+                  color: isLocked ? '#9ea8b3' : '#fff',
+                  cursor: isLocked ? 'not-allowed' : 'pointer',
+                  boxShadow: isLocked ? 'none' : isCurrent ? '0 3px 8px rgba(26, 32, 44, 0.25)' : '0 3px 8px rgba(141, 198, 63, 0.25)',
+                  transition: 'transform 0.15s, box-shadow 0.15s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px',
+                  width: '90%'
+                }}
+                disabled={isLocked}
+                onMouseOver={(e) => { if (!isLocked) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseOut={(e) => { if (!isLocked) e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <Send size={10} /> Task
+              </button>
             </div>
           );
         })}
       </div>
+
+      {showTaskModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div className="glass-card" style={{ padding: '24px', maxWidth: '400px', width: '90%', textAlign: 'center', background: '#fff' }}>
+            <h3 style={{ marginBottom: '16px', fontSize: '1.2rem', color: '#1a1a2e' }}>Task Notification</h3>
+            <p style={{ marginBottom: '24px', color: '#4a5568' }}>Your task has been sent to email.</p>
+            <button className="btn-primary" onClick={() => setShowTaskModal(false)} style={{ width: '100%' }}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
