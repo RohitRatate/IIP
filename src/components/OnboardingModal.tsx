@@ -4,7 +4,7 @@ import { Video, BookOpen, HelpCircle, CheckCircle2, ArrowRight, ArrowLeft, Alert
 
 export const OnboardingModal: React.FC = () => {
   const { selectedProgram, completeQuizAndEnroll, setActiveView } = useInternship();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [acceptedRules, setAcceptedRules] = useState<boolean[]>(new Array(selectedProgram.rules.length).fill(false));
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -49,10 +49,12 @@ export const OnboardingModal: React.FC = () => {
           </div>
           <button onClick={() => setActiveView('CATALOG')} className="btn-secondary btn-sm">← Back to Catalog</button>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-          <div onClick={() => setStep(1)} style={stepTabStyle(1) as React.CSSProperties}><Video size={15} /> 1. Orientation Video</div>
-          <div onClick={() => setStep(2)} style={stepTabStyle(2) as React.CSSProperties}><BookOpen size={15} /> 2. Rules & Guidelines</div>
-          <div onClick={() => allRulesAccepted && setStep(3)} style={{ ...stepTabStyle(3), cursor: allRulesAccepted ? 'pointer' : 'not-allowed', opacity: allRulesAccepted ? 1 : 0.5 } as React.CSSProperties}><HelpCircle size={15} /> 3. Readiness Quiz</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
+          <div onClick={() => setStep(1)} style={stepTabStyle(1) as React.CSSProperties}><Video size={15} /> 1. Orientation</div>
+          <div onClick={() => setStep(2)} style={stepTabStyle(2) as React.CSSProperties}><Video size={15} /> 2. HR</div>
+          <div onClick={() => setStep(3)} style={stepTabStyle(3) as React.CSSProperties}><Video size={15} /> 3. Tech</div>
+          <div onClick={() => setStep(4)} style={stepTabStyle(4) as React.CSSProperties}><BookOpen size={15} /> 4. Guidelines</div>
+          <div onClick={() => allRulesAccepted && setStep(5)} style={{ ...stepTabStyle(5), cursor: allRulesAccepted ? 'pointer' : 'not-allowed', opacity: allRulesAccepted ? 1 : 0.5 } as React.CSSProperties}><HelpCircle size={15} /> 5. Quiz</div>
         </div>
       </div>
 
@@ -73,17 +75,55 @@ export const OnboardingModal: React.FC = () => {
               <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1a1a2e' }}>{selectedProgram.orientationVideoTitle}</div>
               <div style={{ fontSize: '0.75rem', color: '#718096' }}>8 Weeks • 5 Working Days/Week</div>
             </div>
-            <button onClick={() => setStep(2)} className="btn-primary"><span>Continue to Guidelines</span><ArrowRight size={15} /></button>
+            <button onClick={() => setStep(2)} className="btn-primary"><span>Continue to HR Video</span><ArrowRight size={15} /></button>
           </div>
         </div>
       )}
 
-      {/* STEP 2: Rules */}
+      {/* STEP 2: HR Video */}
       {step === 2 && (
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
             <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <BookOpen color="#5a9a1a" /> Step 2: Program Rules & Guidelines
+              <Video color="#5a9a1a" /> Step 2: HR Welcome Video
+            </h3>
+            <p style={{ fontSize: '0.88rem', color: '#718096' }}>A welcome message from Human Resources.</p>
+          </div>
+          <div style={{ position: 'relative', width: '100%', paddingBottom: '44%', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#000', border: '1px solid #e2e8f0' }}>
+            <iframe style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }} src={selectedProgram.orientationVideoUrl} title="HR Welcome Video" allowFullScreen />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '14px 16px' }}>
+            <button onClick={() => setStep(1)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
+            <button onClick={() => setStep(3)} className="btn-primary"><span>Continue to Tech Video</span><ArrowRight size={15} /></button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 3: Tech Video */}
+      {step === 3 && (
+        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Video color="#5a9a1a" /> Step 3: Technical Overview
+            </h3>
+            <p style={{ fontSize: '0.88rem', color: '#718096' }}>A quick introduction from the Technical Lead.</p>
+          </div>
+          <div style={{ position: 'relative', width: '100%', paddingBottom: '44%', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#000', border: '1px solid #e2e8f0' }}>
+            <iframe style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }} src={selectedProgram.orientationVideoUrl} title="Technical Overview Video" allowFullScreen />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '14px 16px' }}>
+            <button onClick={() => setStep(2)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
+            <button onClick={() => setStep(4)} className="btn-primary"><span>Continue to Guidelines</span><ArrowRight size={15} /></button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 4: Rules */}
+      {step === 4 && (
+        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <BookOpen color="#5a9a1a" /> Step 4: Program Rules & Guidelines
             </h3>
             <p style={{ fontSize: '0.88rem', color: '#718096' }}>Review and accept all guidelines before proceeding to the eligibility quiz.</p>
           </div>
@@ -106,20 +146,20 @@ export const OnboardingModal: React.FC = () => {
             })}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <button onClick={() => setStep(1)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
-            <button onClick={() => setStep(3)} disabled={!allRulesAccepted} className="btn-primary" style={{ opacity: allRulesAccepted ? 1 : 0.5, cursor: allRulesAccepted ? 'pointer' : 'not-allowed' }}>
+            <button onClick={() => setStep(3)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
+            <button onClick={() => setStep(5)} disabled={!allRulesAccepted} className="btn-primary" style={{ opacity: allRulesAccepted ? 1 : 0.5, cursor: allRulesAccepted ? 'pointer' : 'not-allowed' }}>
               <span>Take Readiness Quiz</span><ArrowRight size={15} />
             </button>
           </div>
         </div>
       )}
 
-      {/* STEP 3: Quiz */}
-      {step === 3 && (
+      {/* STEP 5: Quiz */}
+      {step === 5 && (
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
             <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <HelpCircle color="#c17d0a" /> Step 3: Eligibility & Readiness Quiz
+              <HelpCircle color="#c17d0a" /> Step 5: Eligibility & Readiness Quiz
             </h3>
             <p style={{ fontSize: '0.88rem', color: '#718096' }}>Answer all questions to unlock Week 1 of your internship.</p>
           </div>
@@ -178,7 +218,7 @@ export const OnboardingModal: React.FC = () => {
 
           {!quizSubmitted && (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button onClick={() => setStep(2)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
+              <button onClick={() => setStep(4)} className="btn-secondary"><ArrowLeft size={15} /> Back</button>
               <button
                 onClick={handleEvaluateQuiz}
                 disabled={Object.keys(selectedAnswers).length < selectedProgram.quizQuestions.length}
