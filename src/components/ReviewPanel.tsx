@@ -3,14 +3,14 @@ import { useInternship } from '../context/InternshipContext';
 import { UserCheck, X, CheckCircle2, XCircle } from 'lucide-react';
 
 export const ReviewPanel: React.FC = () => {
-  const { reviewModalOpen, setReviewModalOpen, reviewWeekNum, enrollment, reviewSubmission, role, selectedProgram } = useInternship();
-  const [feedback, setFeedback] = useState('Excellent project architecture and code cleanliness! Week approved.');
+  const { reviewModalOpen, setReviewModalOpen, reviewTaskNum, enrollment, reviewSubmission, role, selectedProgram } = useInternship();
+  const [feedback, setFeedback] = useState('Excellent project architecture and code cleanliness! Task approved.');
 
   if (!reviewModalOpen) return null;
-  const submission = enrollment.submissions[reviewWeekNum];
+  const submission = enrollment.taskSubmissions[reviewTaskNum];
 
-  const handleApprove = () => { reviewSubmission(reviewWeekNum, 'APPROVED', feedback); setReviewModalOpen(false); };
-  const handleReject = () => { reviewSubmission(reviewWeekNum, 'REJECTED', feedback); setReviewModalOpen(false); };
+  const handleApprove = () => { reviewSubmission(reviewTaskNum, 'APPROVED', feedback); setReviewModalOpen(false); };
+  const handleReject = () => { setReviewModalOpen(false); };
 
   return (
     <div className="modal-overlay" onClick={() => setReviewModalOpen(false)}>
@@ -21,7 +21,7 @@ export const ReviewPanel: React.FC = () => {
               <UserCheck color="#5a9a1a" size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1a1a2e' }}>Review Week {reviewWeekNum} Deliverable</h3>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1a1a2e' }}>Review Milestone Deliverable</h3>
               <div style={{ fontSize: '0.78rem', color: '#718096' }}>Evaluating: {enrollment.studentName} ({selectedProgram.title})</div>
             </div>
           </div>
@@ -45,10 +45,10 @@ export const ReviewPanel: React.FC = () => {
 
         <div className="modal-footer" style={{ justifyContent: 'space-between', background: '#f8fafc', borderRadius: '0 0 var(--radius-xl) var(--radius-xl)' }}>
           <button onClick={handleReject} className="btn-secondary" style={{ color: '#c53030', borderColor: 'rgba(239, 68, 68, 0.4)' }}>
-            <XCircle size={16} /> Request Revisions
+            <XCircle size={16} /> Cancel Review
           </button>
           <button onClick={handleApprove} className="btn-success">
-            <CheckCircle2 size={16} /> Approve & Unlock Next Week
+            <CheckCircle2 size={16} /> Approve & Update Score
           </button>
         </div>
       </div>

@@ -66,7 +66,7 @@ export const CertificateViewer: React.FC = () => {
             {enrollment.studentName}
           </h1>
           <p style={{ fontSize: '1rem', color: '#4a5568', maxWidth: '620px', margin: '0 auto', lineHeight: 1.7 }}>
-            has successfully completed the 8-Week intensive <strong style={{ color: '#1a1a2e' }}>{selectedProgram.title}</strong> ({selectedProgram.type.replace('_', ' ')}) internship under <strong style={{ color: '#1a1a2e' }}>{selectedProgram.companyName}</strong>, fulfilling 40 daily work logs (SOD/EOD) and 8 weekly project deliverables.
+            has successfully completed the intensive <strong style={{ color: '#1a1a2e' }}>{selectedProgram.title}</strong> ({selectedProgram.type.replace('_', ' ')}) internship under <strong style={{ color: '#1a1a2e' }}>{selectedProgram.companyName}</strong>, fulfilling all required case study milestones and capstone project deliverables.
           </p>
         </div>
 

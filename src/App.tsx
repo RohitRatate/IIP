@@ -6,8 +6,6 @@ import { CatalogScreen } from './components/CatalogScreen';
 import { OnboardingModal } from './components/OnboardingModal';
 import { StudentDashboard } from './components/StudentDashboard';
 import { CertificateViewer } from './components/CertificateViewer';
-import { StartOfDayModal } from './components/StartOfDayModal';
-import { EndOfDayModal } from './components/EndOfDayModal';
 import { ReviewPanel } from './components/ReviewPanel';
 
 const MainApp: React.FC = () => {
@@ -26,8 +24,6 @@ const MainApp: React.FC = () => {
       </main>
 
       {/* Global Modals */}
-      <StartOfDayModal />
-      <EndOfDayModal />
       <ReviewPanel />
     </div>
   );

@@ -3,8 +3,7 @@ import {
   InternshipProgram,
   EnrollmentState,
   MOCK_INTERNSHIPS,
-  createDefaultEnrollmentState,
-  DailyLog
+  createDefaultEnrollmentState
 } from '../data/internshipsData';
 
 export type UserRole = 'STUDENT' | 'TRAINER' | 'COMPANY' | 'ADMIN';
@@ -19,32 +18,23 @@ interface InternshipContextType {
   selectedProgram: InternshipProgram;
   setSelectedProgramById: (id: string) => void;
   enrollment: EnrollmentState;
+  
   // Modal states
-  sodModalOpen: boolean;
-  setSodModalOpen: (open: boolean) => void;
-  eodModalOpen: boolean;
-  setEodModalOpen: (open: boolean) => void;
-  activeDayNum: number;
-  setActiveDayNum: (day: number) => void;
   reviewModalOpen: boolean;
   setReviewModalOpen: (open: boolean) => void;
-  reviewWeekNum: number;
-  setReviewWeekNum: (week: number) => void;
+  reviewTaskNum: number;
+  setReviewTaskNum: (taskNum: number) => void;
   
   // Actions
   completeQuizAndEnroll: (score: number) => void;
-  submitSOD: (weekNum: number, dayNum: number, data: { plannedTasks: string; todayWorkFocus: string; expectedOutcome: string }) => void;
-  submitEOD: (weekNum: number, dayNum: number, data: { completedWork: string; progressPercent: number; challengesBlockers: string; keyLearnings: string; attachmentsLink: string }) => void;
-  submitWeeklyTask: (weekNum: number, link: string, notes: string) => void;
-  reviewSubmission: (weekNum: number, status: 'APPROVED' | 'REJECTED', feedback: string) => void;
-  togglePauseState: () => void;
-  reopenInternship: () => void;
+  submitTask: (taskNum: number, link: string, notes: string) => void;
+  reviewSubmission: (taskNum: number, status: 'APPROVED', feedback: string) => void;
   generateCertificate: () => void;
   
   // Demo Simulators
-  simFillActiveDay: () => void;
-  simApproveCurrentWeek: () => void;
-  simUnlockAllWeeks: () => void;
+  simSubmitCurrentTask: () => void;
+  simApproveTask: () => void;
+  simUnlockAllTasks: () => void;
   resetDemo: () => void;
 }
 
@@ -57,13 +47,8 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedProgram, setSelectedProgram] = useState<InternshipProgram>(MOCK_INTERNSHIPS[0]);
   const [enrollment, setEnrollment] = useState<EnrollmentState>(() => createDefaultEnrollmentState(MOCK_INTERNSHIPS[0].id));
 
-  // Modal dialog states
-  const [sodModalOpen, setSodModalOpen] = useState(false);
-  const [eodModalOpen, setEodModalOpen] = useState(false);
-  const [activeDayNum, setActiveDayNum] = useState<number>(1);
-  
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [reviewWeekNum, setReviewWeekNum] = useState<number>(1);
+  const [reviewTaskNum, setReviewTaskNum] = useState<number>(1);
 
   const setSelectedProgramById = (id: string) => {
     const prog = programs.find((p) => p.id === id) || programs[0];
@@ -77,92 +62,44 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       quizPassed: true,
       quizScore: score,
       status: 'IN_PROGRESS',
-      currentWeek: 1
+      unlockedTaskCount: 1
     }));
     setActiveView('DASHBOARD');
   };
 
-  const submitSOD = (
-    weekNum: number,
-    dayNum: number,
-    data: { plannedTasks: string; todayWorkFocus: string; expectedOutcome: string }
-  ) => {
+  const submitTask = (taskNum: number, link: string, notes: string) => {
     setEnrollment((prev) => {
-      const currentLogs = [...(prev.dailyLogs[weekNum] || [])];
-      const dayIndex = currentLogs.findIndex((d) => d.dayNumber === dayNum);
-      if (dayIndex !== -1) {
-        currentLogs[dayIndex] = {
-          ...currentLogs[dayIndex],
-          sodSubmitted: true,
-          plannedTasks: data.plannedTasks,
-          todayWorkFocus: data.todayWorkFocus,
-          expectedOutcome: data.expectedOutcome,
-          sodTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
+      let newUnlockedCount = prev.unlockedTaskCount;
+      const totalTasks = selectedProgram.tasks.length;
+      // Immediately unlock next task when current max is submitted
+      if (taskNum === prev.unlockedTaskCount && prev.unlockedTaskCount < totalTasks) {
+        newUnlockedCount += 1;
       }
+
       return {
         ...prev,
-        dailyLogs: {
-          ...prev.dailyLogs,
-          [weekNum]: currentLogs
+        unlockedTaskCount: newUnlockedCount,
+        taskSubmissions: {
+          ...prev.taskSubmissions,
+          [taskNum]: {
+            ...prev.taskSubmissions[taskNum],
+            submitted: true,
+            submissionLink: link,
+            notes,
+            submittedAt: new Date().toLocaleString(),
+            status: 'UNDER_REVIEW'
+          }
         }
       };
     });
   };
 
-  const submitEOD = (
-    weekNum: number,
-    dayNum: number,
-    data: { completedWork: string; progressPercent: number; challengesBlockers: string; keyLearnings: string; attachmentsLink: string }
-  ) => {
-    setEnrollment((prev) => {
-      const currentLogs = [...(prev.dailyLogs[weekNum] || [])];
-      const dayIndex = currentLogs.findIndex((d) => d.dayNumber === dayNum);
-      if (dayIndex !== -1) {
-        currentLogs[dayIndex] = {
-          ...currentLogs[dayIndex],
-          eodSubmitted: true,
-          completedWork: data.completedWork,
-          progressPercent: data.progressPercent,
-          challengesBlockers: data.challengesBlockers,
-          keyLearnings: data.keyLearnings,
-          attachmentsLink: data.attachmentsLink,
-          eodTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-      }
-      return {
-        ...prev,
-        dailyLogs: {
-          ...prev.dailyLogs,
-          [weekNum]: currentLogs
-        }
-      };
-    });
-  };
-
-  const submitWeeklyTask = (weekNum: number, link: string, notes: string) => {
-    setEnrollment((prev) => ({
-      ...prev,
-      submissions: {
-        ...prev.submissions,
-        [weekNum]: {
-          weekNumber: weekNum,
-          submitted: true,
-          submissionLink: link,
-          notes,
-          submittedAt: new Date().toLocaleString(),
-          status: 'PENDING_REVIEW'
-        }
-      }
-    }));
-  };
-
-  const reviewSubmission = (weekNum: number, status: 'APPROVED' | 'REJECTED', feedback: string) => {
+  const reviewSubmission = (taskNum: number, status: 'APPROVED', feedback: string) => {
     setEnrollment((prev) => {
       const updatedSubmissions = {
-        ...prev.submissions,
-        [weekNum]: {
-          ...prev.submissions[weekNum],
+        ...prev.taskSubmissions,
+        [taskNum]: {
+          ...prev.taskSubmissions[taskNum],
           status,
           feedback,
           reviewedBy: role === 'TRAINER' ? 'Trainer / Mentor' : role === 'COMPANY' ? selectedProgram.companyName : 'Admin',
@@ -170,38 +107,16 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
       };
 
-      let newCurrentWeek = prev.currentWeek;
-      let newStatus = prev.status;
-
-      if (status === 'APPROVED') {
-        if (weekNum === prev.currentWeek && weekNum < 8) {
-          newCurrentWeek = weekNum + 1;
-        } else if (weekNum === 8) {
-          newStatus = 'COMPLETED';
-        }
-      }
-
+      // Check if all are completed
+      const totalTasks = selectedProgram.tasks.length;
+      const allApproved = Object.values(updatedSubmissions).filter(s => s.status === 'APPROVED').length === totalTasks;
+      
       return {
         ...prev,
-        currentWeek: newCurrentWeek,
-        status: newStatus,
-        submissions: updatedSubmissions
+        status: allApproved ? 'COMPLETED' : prev.status,
+        taskSubmissions: updatedSubmissions
       };
     });
-  };
-
-  const togglePauseState = () => {
-    setEnrollment((prev) => ({
-      ...prev,
-      status: prev.status === 'PAUSED_INCOMPLETE' ? 'IN_PROGRESS' : 'PAUSED_INCOMPLETE'
-    }));
-  };
-
-  const reopenInternship = () => {
-    setEnrollment((prev) => ({
-      ...prev,
-      status: 'IN_PROGRESS'
-    }));
   };
 
   const generateCertificate = () => {
@@ -214,68 +129,35 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Demo Toolbar Simulators
-  const simFillActiveDay = () => {
-    const curW = enrollment.currentWeek;
-    const logs = enrollment.dailyLogs[curW] || [];
-    const nextUnfilled = logs.find((l) => !l.eodSubmitted);
-    const dayToFill = nextUnfilled ? nextUnfilled.dayNumber : 1;
-
-    submitSOD(curW, dayToFill, {
-      plannedTasks: `Planned development for Day ${dayToFill} objectives.`,
-      todayWorkFocus: `Feature implementation & bug fixes`,
-      expectedOutcome: `Completed unit component with passing checks.`
-    });
-
-    submitEOD(curW, dayToFill, {
-      completedWork: `Successfully delivered Day ${dayToFill} task requirements with documentation.`,
-      progressPercent: 100,
-      challengesBlockers: `Handled minor edge case in dynamic state update.`,
-      keyLearnings: `Refactored logic into re-usable hook.`,
-      attachmentsLink: `https://github.com/wingz-student/day-${dayToFill}-code`
-    });
+  const simSubmitCurrentTask = () => {
+    const curT = enrollment.unlockedTaskCount;
+    if (enrollment.taskSubmissions[curT]?.status !== 'NOT_SUBMITTED') return;
+    submitTask(curT, `https://github.com/wingz-student/task-${curT}`, `Completed Task ${curT}`);
   };
 
-  const simApproveCurrentWeek = () => {
-    const curW = enrollment.currentWeek;
-    // Ensure 5 days filled
-    for (let d = 1; d <= 5; d++) {
-      submitSOD(curW, d, {
-        plannedTasks: `Auto-filled SOD for Day ${d}`,
-        todayWorkFocus: `Core Task Execution`,
-        expectedOutcome: `Verified outcome`
-      });
-      submitEOD(curW, d, {
-        completedWork: `Auto-filled EOD for Day ${d}`,
-        progressPercent: 100,
-        challengesBlockers: `None`,
-        keyLearnings: `Verified module execution.`,
-        attachmentsLink: `https://github.com/wingz-student/week-${curW}`
-      });
+  const simApproveTask = () => {
+    const underReview = Object.values(enrollment.taskSubmissions).find(s => s.status === 'UNDER_REVIEW');
+    if (underReview) {
+      reviewSubmission(underReview.taskNumber, 'APPROVED', `Great progress on Task ${underReview.taskNumber}!`);
     }
-
-    submitWeeklyTask(curW, `https://github.com/wingz-student/iip-week-${curW}-final`, `Week ${curW} completed with test suites.`);
-    reviewSubmission(curW, 'APPROVED', `Great progress on Week ${curW}! Requirements approved.`);
   };
 
-  const simUnlockAllWeeks = () => {
-    for (let w = 1; w <= 8; w++) {
-      for (let d = 1; d <= 5; d++) {
-        submitSOD(w, d, {
-          plannedTasks: `SOD Week ${w} Day ${d}`,
-          todayWorkFocus: `Focus Week ${w}`,
-          expectedOutcome: `Expected outcome`
-        });
-        submitEOD(w, d, {
-          completedWork: `Completed Week ${w} Day ${d}`,
-          progressPercent: 100,
-          challengesBlockers: `None`,
-          keyLearnings: `Key learnings`,
-          attachmentsLink: `https://github.com/wingz-student/week-${w}`
-        });
+  const simUnlockAllTasks = () => {
+    setEnrollment((prev) => {
+      const totalTasks = selectedProgram.tasks.length;
+      const updatedSubs = { ...prev.taskSubmissions };
+      for (let i = 1; i <= totalTasks; i++) {
+        updatedSubs[i] = {
+          taskNumber: i,
+          submitted: true,
+          submissionLink: `https://github.com/demo/task-${i}`,
+          notes: 'Auto simulated',
+          status: 'APPROVED',
+          reviewedBy: 'Auto Simulator'
+        };
       }
-      submitWeeklyTask(w, `https://github.com/wingz-student/week-${w}`, `Week ${w} deliverable`);
-      reviewSubmission(w, 'APPROVED', `Week ${w} approved by Trainer.`);
-    }
+      return { ...prev, unlockedTaskCount: totalTasks, status: 'COMPLETED', taskSubmissions: updatedSubs };
+    });
   };
 
   const resetDemo = () => {
@@ -286,36 +168,10 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   return (
     <InternshipContext.Provider
       value={{
-        role,
-        setRole,
-        activeView,
-        setActiveView,
-        programs,
-        selectedProgram,
-        setSelectedProgramById,
-        enrollment,
-        sodModalOpen,
-        setSodModalOpen,
-        eodModalOpen,
-        setEodModalOpen,
-        activeDayNum,
-        setActiveDayNum,
-        reviewModalOpen,
-        setReviewModalOpen,
-        reviewWeekNum,
-        setReviewWeekNum,
-        completeQuizAndEnroll,
-        submitSOD,
-        submitEOD,
-        submitWeeklyTask,
-        reviewSubmission,
-        togglePauseState,
-        reopenInternship,
-        generateCertificate,
-        simFillActiveDay,
-        simApproveCurrentWeek,
-        simUnlockAllWeeks,
-        resetDemo
+        role, setRole, activeView, setActiveView, programs, selectedProgram, setSelectedProgramById, enrollment,
+        reviewModalOpen, setReviewModalOpen, reviewTaskNum, setReviewTaskNum,
+        completeQuizAndEnroll, submitTask, reviewSubmission, generateCertificate,
+        simSubmitCurrentTask, simApproveTask, simUnlockAllTasks, resetDemo
       }}
     >
       {children}
@@ -325,8 +181,6 @@ export const InternshipProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
 export const useInternship = () => {
   const context = useContext(InternshipContext);
-  if (!context) {
-    throw new Error('useInternship must be used within an InternshipProvider');
-  }
+  if (!context) throw new Error('useInternship must be used within an InternshipProvider');
   return context;
 };

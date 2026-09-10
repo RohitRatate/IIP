@@ -1,14 +1,13 @@
 import React from 'react';
 import { useInternship } from '../context/InternshipContext';
-import { FastForward, CheckCircle2, AlertTriangle, Unlock, RotateCcw, PlayCircle } from 'lucide-react';
+import { FastForward, CheckCircle2, Unlock, RotateCcw, PlayCircle, Send } from 'lucide-react';
 
 export const DemoToolbar: React.FC = () => {
   const {
     enrollment,
-    simFillActiveDay,
-    simApproveCurrentWeek,
-    simUnlockAllWeeks,
-    togglePauseState,
+    simSubmitCurrentTask,
+    simApproveTask,
+    simUnlockAllTasks,
     resetDemo,
     activeView
   } = useInternship();
@@ -34,12 +33,12 @@ export const DemoToolbar: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#8dc63f' }}>
           <PlayCircle size={16} color="#8dc63f" />
           <span style={{ fontWeight: 700, color: '#ffffff' }}>Demo Controls:</span>
-          <span style={{ color: '#9ea8b3' }}>Quickly test & showcase IIP state transitions</span>
+          <span style={{ color: '#9ea8b3' }}>Test & showcase Case Study milestone transitions</span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <button
-            onClick={simFillActiveDay}
+            onClick={simSubmitCurrentTask}
             style={{
               display: 'flex', alignItems: 'center', gap: '5px',
               padding: '5px 12px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600,
@@ -47,12 +46,12 @@ export const DemoToolbar: React.FC = () => {
               border: '1px solid rgba(141, 198, 63, 0.4)', cursor: 'pointer'
             }}
           >
-            <FastForward size={14} />
-            <span>Complete 1 Day (SOD+EOD)</span>
+            <Send size={14} />
+            <span>Submit Active Deliverable</span>
           </button>
 
           <button
-            onClick={simApproveCurrentWeek}
+            onClick={simApproveTask}
             style={{
               display: 'flex', alignItems: 'center', gap: '5px',
               padding: '5px 12px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600,
@@ -61,25 +60,11 @@ export const DemoToolbar: React.FC = () => {
             }}
           >
             <CheckCircle2 size={14} />
-            <span>Approve Week {enrollment.currentWeek}</span>
+            <span>Trainer Approve Pending Deliverable</span>
           </button>
 
           <button
-            onClick={togglePauseState}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '5px',
-              padding: '5px 12px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600,
-              background: 'rgba(245, 158, 11, 0.12)',
-              color: enrollment.status === 'PAUSED_INCOMPLETE' ? '#f87171' : '#f59e0b',
-              border: '1px solid rgba(245, 158, 11, 0.4)', cursor: 'pointer'
-            }}
-          >
-            <AlertTriangle size={14} />
-            <span>{enrollment.status === 'PAUSED_INCOMPLETE' ? 'Resume Internship' : 'Simulate Missed Deadline'}</span>
-          </button>
-
-          <button
-            onClick={simUnlockAllWeeks}
+            onClick={simUnlockAllTasks}
             style={{
               display: 'flex', alignItems: 'center', gap: '5px',
               padding: '5px 12px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600,
@@ -88,7 +73,7 @@ export const DemoToolbar: React.FC = () => {
             }}
           >
             <Unlock size={14} />
-            <span>Unlock All 8 Weeks</span>
+            <span>Complete All Milestones</span>
           </button>
 
           <button

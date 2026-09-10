@@ -1,4 +1,4 @@
-import { ArrowRight, Award, CheckCircle2, Clock, HelpCircle, ShieldAlert, Sparkles, UserCheck, Users, Video } from 'lucide-react';
+import { ArrowRight, Award, Building, Building2, CheckCircle2, Clock, HelpCircle, ShieldAlert, Sparkles, UserCheck, Users, Video } from 'lucide-react';
 import React from 'react';
 import { useInternship } from '../context/InternshipContext';
 import { InternshipProgram } from '../data/internshipsData';
@@ -15,7 +15,8 @@ export const CatalogScreen: React.FC = () => {
     switch (type) {
       case 'SELF_PLACED': return <Users size={22} color="#8dc63f" />;
       case 'MENTOR_GUIDED': return <UserCheck size={22} color="#5a9a1a" />;
-      case 'COMPANY_ASSISTED': return <ShieldAlert size={22} color="#2d7a4a" />;
+      case 'COMPANY_REMOTE': return <Building2 size={22} color="#2563eb" />;
+      case 'COMPANY_ON_PREMISES': return <Building size={22} color="#7c3aed" />;
       default: return <Sparkles size={22} color="#8dc63f" />;
     }
   };
@@ -24,7 +25,8 @@ export const CatalogScreen: React.FC = () => {
     switch (type) {
       case 'SELF_PLACED': return { background: 'rgba(141, 198, 63, 0.15)', color: '#4a7a10', border: '1px solid rgba(141, 198, 63, 0.4)' };
       case 'MENTOR_GUIDED': return { background: 'rgba(90, 154, 26, 0.12)', color: '#3d6810', border: '1px solid rgba(90, 154, 26, 0.35)' };
-      case 'COMPANY_ASSISTED': return { background: 'rgba(245, 158, 11, 0.12)', color: '#9a6b00', border: '1px solid rgba(245, 158, 11, 0.35)' };
+      case 'COMPANY_REMOTE': return { background: 'rgba(59, 130, 246, 0.12)', color: '#1d4ed8', border: '1px solid rgba(59, 130, 246, 0.35)' };
+      case 'COMPANY_ON_PREMISES': return { background: 'rgba(139, 92, 246, 0.12)', color: '#6d28d9', border: '1px solid rgba(139, 92, 246, 0.35)' };
       default: return {};
     }
   };
@@ -72,12 +74,12 @@ export const CatalogScreen: React.FC = () => {
             <span style={{ color: '#8dc63f' }}>→</span> Certification
           </h1>
           <p style={{ fontSize: '1rem', color: '#94a3b8', lineHeight: 1.6 }}>
-            Choose from 3 specialized internship tracks designed to build real-world work habits with 8-week structured tasks, daily SOD/EOD updates, mentor reviews, and verified credentials.
+            Choose from 4 specialized internship tracks designed to build real-world work habits with structured milestone tasks, daily SOD/EOD updates, mentor reviews, and verified credentials.
           </p>
         </div>
       </div>
 
-      {/* 3 Internship Track Cards */}
+      {/* 4 Internship Track Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px' }}>
         {programs.map((prog, idx) => (
           <div
@@ -106,7 +108,7 @@ export const CatalogScreen: React.FC = () => {
             </div>
 
             <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#8dc63f', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
-              Track {idx + 1}: {prog.type.replace('_', ' ')}
+              Track {idx + 1}: {prog.type.replace(/_/g, ' ')}
             </div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '8px' }}>
               {prog.title}
@@ -143,7 +145,7 @@ export const CatalogScreen: React.FC = () => {
                 Program Workflow
               </div>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem', color: '#718096' }}>
-                {['Orientation & Pre-Quiz', 'SOD Morning + EOD Evening (5 Days)', 'Weekly Task Submission & Review', '8-Week Sequential Unlocking'].map((item) => (
+                {['Orientation & Pre-Quiz', 'SOD Morning + EOD Evening (5 Days)', 'Milestone Task Submission & Review', 'Sequential Milestone Unlocking'].map((item) => (
                   <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <CheckCircle2 size={13} color="#8dc63f" />{item}
                   </li>
