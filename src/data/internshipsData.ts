@@ -20,6 +20,11 @@ export interface TaskConfig {
   resources: ResourceItem[];
 }
 
+import tataLogo from '../logos/Tata_logo.svg.webp';
+import deloitteLogo from '../logos/Logo_of_Deloitte.svg.webp';
+import accentureLogo from '../logos/Accenture_logo.svg.webp';
+import ibmLogo from '../logos/IBM_logo.svg.webp';
+
 export interface InternshipProgram {
   id: string;
   title: string;
@@ -73,7 +78,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     type: "SELF_PLACED",
     badgeText: "Self-Paced Internship",
     companyName: "Tata",
-    companyLogo: "/src/logos/Tata_logo.svg.webp",
+    companyLogo: tataLogo,
     companyDescription: "Tata Group is a global enterprise, headquartered in India, comprising 30 companies across 10 clusters. We operate in more than 100 countries across six continents, with a mission 'To improve the quality of life of the communities we serve globally, through long-term stakeholder value creation based on Leadership with Trust'. Tata Group has always believed in returning wealth to the society it serves. Tata iQ, our dedicated analytics and data science division, empowers businesses with data-driven decision making and advanced AI capabilities. We built this program to help aspiring data scientists and analysts gain practical experience in the rapidly evolving field of Generative AI. We want to nurture talent that understands how to leverage complex datasets to solve real business challenges, driving innovation and sustainable growth for the future.",
     duration: "2 Month",
     description: "Learn to apply Generative AI to data analytics in a real-world scenario. You are an AI transformation consultant at Tata iQ.",
@@ -165,7 +170,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     type: "MENTOR_GUIDED",
     badgeText: "Mentored Internship",
     companyName: "Deloitte",
-    companyLogo: "/src/logos/Logo_of_Deloitte.svg.webp",
+    companyLogo: deloitteLogo,
     companyDescription: "Deloitte is a leading global provider of audit and assurance, consulting, financial advisory, risk advisory, tax, and related services. With more than 150 years of hard work and commitment to making a real difference, our organization has grown in scale and diversity—yet our shared culture remains the same. We believe that we are only as good as the good we do. Our mission is to help our clients and our people excel. We developed this Mergers & Acquisitions (M&A) internship program to provide students with a realistic glimpse into the fast-paced, high-stakes world of investment banking and financial advisory. By participating in this program, you will develop a deep understanding of corporate valuation, financial modeling, and strategic advisory. We want to equip the next generation of financial professionals with the rigorous analytical skills and business acumen required to succeed in a competitive global market.",
     duration: "2 Months",
     description: "Work as an M&A analyst. Build financial models, value companies, and craft pitch books.",
@@ -230,7 +235,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     type: "COMPANY_REMOTE",
     badgeText: "Company Remote",
     companyName: "Accenture",
-    companyLogo: "/src/logos/Accenture_logo.svg.webp",
+    companyLogo: accentureLogo,
     companyDescription: "Accenture is a global professional services company with leading capabilities in digital, cloud, and security. Combining unmatched experience and specialized skills across more than 40 industries, we offer Strategy and Consulting, Technology and Operations services, and Accenture Song. Our purpose is to deliver on the promise of technology and human ingenuity. We embrace the power of change to create 360° value for our clients, people, and communities. We designed this Digital Marketing program because the landscape of customer engagement is constantly shifting. Brands need agile, data-savvy marketers who can navigate SEO, content strategy, and dynamic web analytics. This simulation provides a hands-on environment where you can master digital campaigns and performance tracking. We are committed to fostering innovative marketing talent capable of driving digital transformation and creating meaningful connections in an increasingly digital world.",
     duration: "2 Months",
     description: "Develop digital marketing campaigns, manage SEO, and analyze web traffic.",
@@ -285,7 +290,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
     type: "COMPANY_ON_PREMISES",
     badgeText: "On-Premises Internship",
     companyName: "Demo Company",
-    companyLogo: "/src/logos/IBM_logo.svg.webp",
+    companyLogo: ibmLogo,
     companyDescription: "IBM (International Business Machines Corporation) is a multinational technology corporation known for its hardware, software, cloud-based services, and cognitive computing. As one of the world's oldest and largest technology companies, IBM has a long history of innovation, from the invention of the ATM and the floppy disk to the development of Watson, our pioneering AI platform. We are dedicated to creating technologies that drive progress and address some of the world's most complex problems. This on-premises security operations internship was created to immerse students in the critical field of cybersecurity and IT infrastructure management. We believe that hands-on, practical experience in a simulated corporate environment is the best way to prepare future tech leaders. Through this program, we aim to cultivate a resilient and highly skilled workforce capable of protecting enterprise networks and driving technological advancement securely.",
     duration: "2 Months",
     description: "Hands-on corporate campus internship conducted within on-premises security operations centers.",
