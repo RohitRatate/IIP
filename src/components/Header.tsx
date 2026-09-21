@@ -78,7 +78,13 @@ export const Header: React.FC = () => {
               paddingLeft: '16px',
               borderLeft: '2px solid #e2e8f0'
             }}>
-              <span style={{ fontSize: '1.2rem' }}>{selectedProgram.companyLogo}</span>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '6px',
+                background: '#fff', border: '1px solid #e2e8f0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0
+              }}>
+                <img src={selectedProgram.companyLogo} alt={selectedProgram.companyName} style={{ width: '26px', height: '26px', objectFit: 'contain' }} />
+              </div>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1a1a2e' }}>{selectedProgram.title}</div>
                 <div style={{ fontSize: '0.72rem', color: '#718096' }}>{selectedProgram.companyName}</div>

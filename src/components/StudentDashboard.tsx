@@ -1,202 +1,356 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useInternship } from '../context/InternshipContext';
-import { TimelineStepper } from './TimelineStepper';
-import { Calendar, FileCode, Video, Award, AlertTriangle, RefreshCw, Clock, Building2, UserCheck, Sparkles } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight, BookOpen, Microscope, UploadCloud } from 'lucide-react';
 
 export const StudentDashboard: React.FC = () => {
-  const { selectedProgram, enrollment, role, generateCertificate } = useInternship();
+  const { selectedProgram, enrollment, generateCertificate, submitTask, simApproveTask } = useInternship();
 
-  const [activeTaskTab, setActiveTaskTab] = useState<number>(enrollment.unlockedTaskCount || 1);
-  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'TASK_DETAILS' | 'RECAP'>('TASK_DETAILS');
+  const [activeTab, setActiveTab] = useState<'INTRO' | number>('INTRO');
+  const [introStep, setIntroStep] = useState<number>(1);
+  const [taskViewMode, setTaskViewMode] = useState<'OVERVIEW' | 'SUBMIT'>('OVERVIEW');
+  const [submissionNotes, setSubmissionNotes] = useState('');
 
-  const totalTasksCount = selectedProgram.tasks?.length || 8;
+  const totalTasksCount = selectedProgram.tasks?.length || 4;
   const approvedTasksCount = Object.values(enrollment.taskSubmissions || {}).filter(
     (s) => s.status === 'APPROVED'
   ).length;
-  const certificateScorePercent = Math.round((approvedTasksCount / totalTasksCount) * 1000) / 10;
 
-  const currentTaskConfig = selectedProgram.tasks?.find((t) => t.taskNumber === activeTaskTab) || selectedProgram.tasks[0];
-  const currentSubmission = enrollment.taskSubmissions?.[activeTaskTab];
+  const enrolledDate = new Date(enrollment.enrolledAt);
+  const expiryDate = new Date(enrolledDate);
+  expiryDate.setMonth(expiryDate.getMonth() + 2);
+  const hasExpired = new Date() > expiryDate;
+  
+  const canGenerateCertificate = approvedTasksCount === totalTasksCount || hasExpired;
 
-  const tabStyle = (active: boolean) => ({
-    display: 'flex', alignItems: 'center', gap: '7px',
-    padding: '10px 18px', borderRadius: 'var(--radius-md)',
-    fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
-    background: active ? '#8dc63f' : '#ffffff',
-    color: active ? '#1a1a2e' : '#718096',
-    border: `1px solid ${active ? '#6aa513' : '#e2e8f0'}`,
-    boxShadow: active ? '0 2px 10px rgba(141, 198, 63, 0.3)' : 'none',
-    transition: 'all 0.2s'
-  });
+  const currentTaskConfig = selectedProgram.tasks?.find((t) => t.taskNumber === activeTab);
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      {/* Header Summary Card */}
-      <div className="glass-card" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '18px', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{
-              width: '58px', height: '58px', borderRadius: '16px',
-              background: 'rgba(141, 198, 63, 0.12)', border: '2px solid rgba(141, 198, 63, 0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem'
-            }}>
-              {selectedProgram.companyLogo}
+  const handleNextIntroStep = () => {
+    if (introStep < 5) {
+      setIntroStep(introStep + 1);
+    } else {
+      setActiveTab(1);
+      setTaskViewMode('OVERVIEW');
+    }
+  };
+
+  const handleTaskAction = () => {
+    if (typeof activeTab === 'number') {
+      if (taskViewMode === 'OVERVIEW') {
+        setTaskViewMode('SUBMIT');
+      } else {
+        // Submit
+        submitTask(activeTab, 'https://github.com/demo/submission', submissionNotes || 'Completed the task.');
+        simApproveTask(); // Auto approve for demo
+        setSubmissionNotes('');
+        
+        if (activeTab === totalTasksCount) {
+          generateCertificate();
+        } else {
+          setActiveTab(activeTab + 1);
+          setTaskViewMode('OVERVIEW');
+        }
+      }
+    }
+  };
+
+  const handleSidebarTabClick = (tab: 'INTRO' | number) => {
+    setActiveTab(tab);
+    if (typeof tab === 'number') {
+      setTaskViewMode('OVERVIEW');
+    }
+  };
+
+  const renderIntroContent = () => {
+    switch (introStep) {
+      case 1:
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e' }}>Intro & Scenario</h2>
+            <p style={{ color: '#4a5568' }}>We're so excited to have you here with us!</p>
+            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '8px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>Your Role</h3>
+              <ul style={{ paddingLeft: '20px', color: '#4a5568', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <li>You are an intern at {selectedProgram.companyName}.</li>
+                <li>You work within a larger team, collaborating with business leaders.</li>
+              </ul>
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e' }}>{selectedProgram.title}</h1>
-                <span style={{ background: 'rgba(141, 198, 63, 0.15)', color: '#4a7a10', padding: '3px 10px', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 700, border: '1px solid rgba(141, 198, 63, 0.4)' }}>
-                  {selectedProgram.badgeText}
-                </span>
+            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '8px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>Your Goal</h3>
+              <ul style={{ paddingLeft: '20px', color: '#4a5568', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <li>Your primary objective is to complete the tasks successfully.</li>
+                <li>Throughout the project, ensure your solutions are effective.</li>
+              </ul>
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e' }}>Your team at {selectedProgram.companyName}</h2>
+            <p style={{ color: '#4a5568' }}>This team specializes in delivering high-quality results.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+                <h4 style={{ fontWeight: 700 }}>{enrollment.studentName}</h4>
+                <div style={{ fontSize: '0.9rem', color: '#718096' }}>Intern (YOU)</div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.85rem', color: '#718096' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Building2 size={13} color="#8dc63f" /> {selectedProgram.companyName}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><UserCheck size={13} color="#8dc63f" /> {enrollment.studentName}</span>
-              </div>
-            </div>
-          </div>
-
-          {enrollment.status === 'COMPLETED' || approvedTasksCount === totalTasksCount ? (
-            <button onClick={generateCertificate} className="btn-success" style={{ fontSize: '0.95rem', padding: '12px 22px' }}>
-              <Award size={18} /> Generate Certificate
-            </button>
-          ) : (
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.72rem', color: '#9ea8b3', textTransform: 'uppercase', fontWeight: 700 }}>Program Status</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#5a9a1a' }}>
-                In Progress 🟢
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Metrics Row */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px',
-          background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '16px'
-        }}>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 700, color: '#718096', marginBottom: '6px' }}>
-              <span>Certificate Progress</span><span style={{ color: '#5a9a1a', fontWeight: 800 }}>{certificateScorePercent}%</span>
-            </div>
-            <div style={{ height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${(approvedTasksCount / totalTasksCount) * 100}%`, background: 'linear-gradient(90deg, #8dc63f, #5a9a1a)', borderRadius: '4px', transition: 'width 0.4s' }} />
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ea8b3', marginBottom: '2px' }}>Completed Milestones</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: approvedTasksCount > 0 ? '#4a7a10' : '#1a1a2e' }}>
-              {approvedTasksCount} Approved {approvedTasksCount > 0 ? '✅' : '🔒'}
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ea8b3', marginBottom: '2px' }}>Active Stage</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#5a9a1a' }}>
-              Unlocked & Active 🟢
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ea8b3', marginBottom: '2px' }}>Evaluation Policy</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#c17d0a', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '3px' }}>
-              Only Approved Counts
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 2: Project / Case Study Deliverable & Rules Overview (Above Task List) */}
-      <div className="glass-card" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                fontSize: '0.75rem', fontWeight: 800, color: '#4a7a10',
-                background: 'rgba(141, 198, 63, 0.15)', padding: '4px 10px', borderRadius: '6px'
-              }}>
-                {selectedProgram.badgeText}
-              </span>
-              <span style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 700 }}>
-                {selectedProgram.duration} Intensive Capstone Track
-              </span>
-            </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a1a2e', marginTop: '6px' }}>
-              Project Case Study & 2-Month Deliverable Scope
-            </h2>
-          </div>
-
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={() => setActiveWorkspaceTab('TASK_DETAILS')}
-              style={tabStyle(activeWorkspaceTab === 'TASK_DETAILS')}
-            >
-              <FileCode size={16} /> Scope & Deliverable Brief
-            </button>
-            <button
-              onClick={() => setActiveWorkspaceTab('RECAP')}
-              style={tabStyle(activeWorkspaceTab === 'RECAP')}
-            >
-              <Video size={16} /> Orientation Video
-            </button>
-          </div>
-        </div>
-
-        {/* Tab Content: Project Scope & Deliverable Overview */}
-        {activeWorkspaceTab === 'TASK_DETAILS' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-              <div style={{ background: '#f0fdf4', border: '1px solid rgba(141, 198, 63, 0.35)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5a9a1a', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  2-Month Internship Objective
-                </div>
-                <p style={{ fontSize: '0.92rem', color: '#1a1a2e', lineHeight: 1.6 }}>
-                  {selectedProgram.description}
-                </p>
-              </div>
-
-              <div style={{ background: '#fffbeb', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c17d0a', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  What You Will Deliver & Complete
-                </div>
-                <p style={{ fontSize: '0.92rem', color: '#1a1a2e', lineHeight: 1.6 }}>
-                  Deliver an end-to-end production-grade case study solution. Each task must be submitted sequentially and evaluated by mentors to earn the official completion certificate.
-                </p>
+              <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+                <h4 style={{ fontWeight: 700 }}>{selectedProgram.mentorName || 'Manager'}</h4>
+                <div style={{ fontSize: '0.9rem', color: '#718096' }}>{selectedProgram.mentorRole || 'Supervisor'}</div>
               </div>
             </div>
-
-            {/* Rules & Policies */}
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '16px 20px' }}>
-              <h4 style={{ fontSize: '0.92rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Sparkles size={16} color="#8dc63f" /> Program Delivery Rules & Regulations:
-              </h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
-                {selectedProgram.rules.map((rule, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', color: '#4a5568' }}>
-                    <span style={{ color: '#5a9a1a', fontWeight: 800 }}>✓</span>
-                    <span>{rule}</span>
+          </div>
+        );
+      case 3:
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e' }}>Project briefing</h2>
+            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '8px' }}>
+              <p style={{ marginBottom: '12px' }}><strong>From:</strong> {selectedProgram.mentorName || 'Manager'}</p>
+              <p style={{ marginBottom: '12px' }}><strong>To:</strong> {enrollment.studentName}</p>
+              <p>Hello,</p>
+              <p style={{ marginTop: '12px' }}>I'm assigning you to a new project. We have observed an opportunity to improve our processes. To improve our efficiency, we need you to develop a solution.</p>
+              <p style={{ marginTop: '12px' }}>For now, familiarize yourself with the project's objectives and key challenges. More details will be shared as we move forward. You have a 2-month period to complete this simulation. Let me know if you have any questions.</p>
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e' }}>Let's see if you're up to speed</h2>
+            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '8px' }}>
+              <p style={{ marginBottom: '16px', fontWeight: 600 }}>{selectedProgram.quizQuestions?.[0]?.question}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {selectedProgram.quizQuestions?.[0]?.options.map((opt, idx) => (
+                  <div key={idx} style={{ padding: '12px', border: '1px solid #e2e8f0', borderRadius: '4px', background: '#fff' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                      <input type="radio" name="quiz" />
+                      <span>{opt}</span>
+                    </label>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        )}
+        );
+      case 5:
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+            <div style={{ fontSize: '4rem' }}>🏃</div>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#1a1a2e' }}>Let's get started!</h2>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
-        {/* Tab Content: Video Briefing */}
-        {activeWorkspaceTab === 'RECAP' && (
+  const renderTaskContent = () => {
+    if (!currentTaskConfig) return null;
+
+    if (taskViewMode === 'SUBMIT') {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1a1a2e' }}>Submit your work</h2>
+          <p style={{ color: '#4a5568' }}>Upload your deliverables for <strong>{currentTaskConfig.title}</strong> below.</p>
+          
+          <div style={{ background: '#f8fafc', padding: '32px', borderRadius: '12px', border: '1px dashed #cbd5e1', textAlign: 'center' }}>
+            <UploadCloud size={48} color="#8dc63f" style={{ margin: '0 auto 16px auto' }} />
+            <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>Upload files or add a link</h4>
+            <p style={{ color: '#718096', fontSize: '0.9rem', marginBottom: '24px' }}>Support for PDF, DOCX, XLSX, and URLs</p>
+            <input 
+              type="text" 
+              placeholder="Add submission notes or link..." 
+              value={submissionNotes}
+              onChange={(e) => setSubmissionNotes(e.target.value)}
+              style={{ width: '100%', maxWidth: '400px', padding: '12px', borderRadius: '6px', border: '1px solid #e2e8f0' }}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1a1a2e' }}>{currentTaskConfig.title}</h2>
+        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#4a5568' }}>Task overview</h3>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* What you'll learn */}
+          <div style={{ display: 'flex', gap: '20px', background: '#f8fafc', padding: '24px', borderRadius: '12px' }}>
+            <div style={{ color: '#8dc63f' }}><BookOpen size={40} /></div>
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>What you'll learn</h4>
+              <ul style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', color: '#4a5568' }}>
+                {currentTaskConfig.learn?.map((item, i) => <li key={i}>{item}</li>)}
+              </ul>
+            </div>
+          </div>
+
+          {/* What you'll do */}
+          <div style={{ display: 'flex', gap: '20px', background: '#f8fafc', padding: '24px', borderRadius: '12px' }}>
+            <div style={{ color: '#8dc63f' }}><Microscope size={40} /></div>
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>What you'll do</h4>
+              <ul style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', color: '#4a5568' }}>
+                {currentTaskConfig.do?.map((item, i) => <li key={i}>{item}</li>)}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {selectedProgram.orientationVideoUrl && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ position: 'relative', width: '100%', paddingBottom: '40%', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#000', border: '1px solid #e2e8f0' }}>
-              <iframe
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
-                src={selectedProgram.orientationVideoUrl}
-                title={selectedProgram.orientationVideoTitle}
-                allowFullScreen
-              />
+            <h4 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Watch this brief video before you start this task</h4>
+            <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', background: '#000', borderRadius: '8px', overflow: 'hidden' }}>
+               <iframe
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                  src={selectedProgram.orientationVideoUrl}
+                  title="Video"
+                  allowFullScreen
+                />
             </div>
           </div>
         )}
       </div>
+    );
+  };
 
-      {/* SECTION 3: Vertical Task Curriculum (Below Deliverable Section) */}
-      <TimelineStepper activeTaskTab={activeTaskTab} setActiveTaskTab={setActiveTaskTab} />
+  return (
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', background: '#fff', borderTop: '1px solid #e2e8f0' }}>
+      
+      {/* Sidebar */}
+      <div style={{ width: '320px', borderRight: '1px solid #e2e8f0', padding: '24px 0', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+        <div style={{ padding: '0 24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{
+            width: '72px', height: '72px', marginBottom: '16px',
+            background: '#ffffff', border: '1px solid #e2e8f0',
+            borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'
+          }}>
+            <img src={selectedProgram.companyLogo} alt={selectedProgram.companyName} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+          </div>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, textAlign: 'center' }}>{selectedProgram.title}</h2>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {/* Intro Tab */}
+          <button
+            onClick={() => handleSidebarTabClick('INTRO')}
+            style={{
+              padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '12px', width: '100%', textAlign: 'left',
+              background: activeTab === 'INTRO' ? '#f8fafc' : 'transparent',
+              borderLeft: activeTab === 'INTRO' ? '4px solid #8dc63f' : '4px solid transparent',
+              cursor: 'pointer', borderTop: 'none', borderRight: 'none', borderBottom: 'none'
+            }}
+          >
+            <CheckCircle2 size={20} color="#8dc63f" />
+            <div>
+              <div style={{ fontWeight: 700, color: '#1a1a2e' }}>Intro & Scenario</div>
+              <div style={{ fontSize: '0.8rem', color: '#718096' }}>Background context and your project team</div>
+            </div>
+          </button>
+
+          {/* Tasks Tabs */}
+          {selectedProgram.tasks?.map((task) => {
+            const isUnlocked = enrollment.unlockedTaskCount >= task.taskNumber;
+            const isApproved = enrollment.taskSubmissions[task.taskNumber]?.status === 'APPROVED';
+            
+            return (
+              <button
+                key={task.taskNumber}
+                onClick={() => isUnlocked && handleSidebarTabClick(task.taskNumber)}
+                style={{
+                  padding: '16px 24px', display: 'flex', alignItems: 'flex-start', gap: '16px', width: '100%', textAlign: 'left',
+                  background: activeTab === task.taskNumber ? '#f8fafc' : 'transparent',
+                  borderLeft: activeTab === task.taskNumber ? '4px solid #8dc63f' : '4px solid transparent',
+                  cursor: isUnlocked ? 'pointer' : 'not-allowed', opacity: isUnlocked ? 1 : 0.5,
+                  borderTop: 'none', borderRight: 'none', borderBottom: 'none'
+                }}
+              >
+                <div style={{
+                  width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: isApproved ? '#8dc63f' : '#e2e8f0', color: isApproved ? '#fff' : '#718096', fontSize: '0.8rem', fontWeight: 700, flexShrink: 0
+                }}>
+                  {isApproved ? '✓' : task.taskNumber}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, color: '#1a1a2e', marginBottom: '4px', lineHeight: 1.3 }}>{task.title}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#718096' }}>{task.learn?.[0] || 'Task description'}</div>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+
+        <div style={{ marginTop: 'auto', padding: '24px' }}>
+           <button 
+             onClick={generateCertificate} 
+             disabled={!canGenerateCertificate}
+             style={{ 
+               width: '100%', padding: '12px', 
+               background: canGenerateCertificate ? 'transparent' : '#f8fafc', 
+               color: canGenerateCertificate ? '#1a56db' : '#94a3b8', 
+               border: `1px solid ${canGenerateCertificate ? '#1a56db' : '#cbd5e1'}`, 
+               borderRadius: '6px', fontWeight: 600, 
+               cursor: canGenerateCertificate ? 'pointer' : 'not-allowed' 
+             }}>
+             Generate Certificate
+           </button>
+           {!canGenerateCertificate && (
+             <div style={{ fontSize: '0.75rem', color: '#718096', marginTop: '8px', textAlign: 'center', lineHeight: 1.4 }}>
+               Available after completing all tasks or when your 2-month period expires.
+             </div>
+           )}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: '40px 60px', overflowY: 'auto' }}>
+        {activeTab === 'INTRO' && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+              <div style={{ fontWeight: 700, color: '#4a5568' }}>Intro & Scenario</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button onClick={() => setIntroStep(Math.max(1, introStep - 1))} disabled={introStep === 1} style={{ background: 'none', border: 'none', cursor: introStep === 1 ? 'not-allowed' : 'pointer', color: '#718096' }}><ChevronLeft size={18} /></button>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <button key={s} onClick={() => setIntroStep(s)} style={{
+                    width: '24px', height: '24px', borderRadius: '4px', border: 'none',
+                    background: introStep === s ? '#2563eb' : 'transparent',
+                    color: introStep === s ? '#fff' : '#718096', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem'
+                  }}>
+                    {s}
+                  </button>
+                ))}
+                <button onClick={() => setIntroStep(Math.min(5, introStep + 1))} disabled={introStep === 5} style={{ background: 'none', border: 'none', cursor: introStep === 5 ? 'not-allowed' : 'pointer', color: '#718096' }}><ChevronRight size={18} /></button>
+              </div>
+            </div>
+
+            {renderIntroContent()}
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px' }}>
+               <button onClick={handleNextIntroStep} className="btn-primary" style={{ padding: '12px 24px' }}>
+                 {introStep === 5 ? 'Start Next Task' : 'Next'}
+               </button>
+            </div>
+          </>
+        )}
+
+        {typeof activeTab === 'number' && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+              <div style={{ fontWeight: 700, color: '#4a5568' }}>{currentTaskConfig?.title}</div>
+            </div>
+
+            {renderTaskContent()}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px' }}>
+               <button onClick={handleTaskAction} className={taskViewMode === 'SUBMIT' ? 'btn-success' : 'btn-primary'} style={{ padding: '12px 24px' }}>
+                 {taskViewMode === 'OVERVIEW' ? 'Next' : (activeTab === totalTasksCount ? 'Submit & Get Certificate' : 'Submit Task')}
+               </button>
+            </div>
+          </>
+        )}
+      </div>
+
     </div>
   );
 };

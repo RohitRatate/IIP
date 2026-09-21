@@ -15,8 +15,8 @@ export interface ResourceItem {
 export interface TaskConfig {
   taskNumber: number;
   title: string;
-  objective: string;
-  task: string;
+  learn: string[];
+  do: string[];
   resources: ResourceItem[];
 }
 
@@ -27,6 +27,7 @@ export interface InternshipProgram {
   badgeText: string;
   companyName: string;
   companyLogo: string;
+  companyDescription?: string;
   duration: string; // "2 Months"
   description: string;
   enrollmentMode: string;
@@ -67,347 +68,267 @@ export interface EnrollmentState {
 
 export const MOCK_INTERNSHIPS: InternshipProgram[] = [
   {
-    id: "iip-self-01",
-    title: "Full-Stack Web Development",
+    id: "iip-tata-genai",
+    title: "GenAI Powered Data Analytics",
     type: "SELF_PLACED",
-    badgeText: "Virtual Internship",
-    companyName: "Wingz Tech Academy",
-    companyLogo: "⚡",
-    duration: "2 Months",
-    description: "Self-paced industry internship focused on building modern web applications with React, TypeScript, Node.js, and Cloud API integration.",
+    badgeText: "Self-Paced Internship",
+    companyName: "Tata",
+    companyLogo: "/src/logos/Tata_logo.svg.webp",
+    companyDescription: "Tata Group is a global enterprise, headquartered in India, comprising 30 companies across 10 clusters. We operate in more than 100 countries across six continents, with a mission 'To improve the quality of life of the communities we serve globally, through long-term stakeholder value creation based on Leadership with Trust'. Tata Group has always believed in returning wealth to the society it serves. Tata iQ, our dedicated analytics and data science division, empowers businesses with data-driven decision making and advanced AI capabilities. We built this program to help aspiring data scientists and analysts gain practical experience in the rapidly evolving field of Generative AI. We want to nurture talent that understands how to leverage complex datasets to solve real business challenges, driving innovation and sustainable growth for the future.",
+    duration: "2 Month",
+    description: "Learn to apply Generative AI to data analytics in a real-world scenario. You are an AI transformation consultant at Tata iQ.",
     enrollmentMode: "Open Access — Direct Student Enrollment",
     orientationVideoUrl: "https://www.youtube.com/embed/LDB4uaJ87e0",
-    orientationVideoTitle: "Welcome to IIP Self-Placed Web Development",
+    orientationVideoTitle: "Welcome to Tata GenAI Powered Data Analytics",
     rules: [
-      "Complete the 8 tasks sequentially.",
-      "Submit the current task to instantly unlock the next one.",
-      "Only approved tasks count towards your final certificate score.",
-      "You have a flexible 2-month period to complete all tasks."
+      "Complete the tasks sequentially.",
+      "Submit the current task to instantly unlock the next one."
     ],
     quizQuestions: [
       {
         id: "q1",
-        question: "How many tasks are in this case study?",
-        options: ["4", "8", "12", "10"],
+        question: "What is the primary objective of the AI-powered solution being developed for Geldium?",
+        options: [
+          "To automate the collections process and eliminate manual intervention",
+          "To predict which customers are likely to miss payments and recommend interventions",
+          "To increase interest rates for high-risk customers",
+          "To replace the existing risk management team with AI"
+        ],
         correctAnswerIndex: 1
       }
     ],
     tasks: [
       {
         taskNumber: 1,
-        title: "Frontend Architecture & Component System",
-        objective: "Understand component design patterns, build responsive layouts, and configure clean TypeScript interfaces.",
-        task: "Build a responsive dashboard layout using modular React components and CSS custom properties.",
+        title: "Exploratory data analysis and risk profiling",
+        learn: [
+          "How to conduct exploratory data analysis (EDA) using GenAI.",
+          "Techniques to handle missing values and ensure data quality.",
+          "Understanding customer risk factors for delinquency.",
+          "How to leverage synthetic data generation to enhance datasets when real data is insufficient."
+        ],
+        do: [
+          "Identify key datasets required to predict delinquency.",
+          "Perform an exploratory analysis on provided datasets, using GenAI tools to assist with summarization, treatment of missing data, risk profiling, and synthetic data creation.",
+          "Document your findings, including data patterns and anomalies that may impact predictions."
+        ],
         resources: [
-          { id: "r1", name: "React 18 & TS Best Practices Guide", type: "DOC", url: "https://react.dev" },
-          { id: "r2", name: "CSS Grid & Flexbox Masterclass", type: "VIDEO", url: "https://youtube.com" },
-          { id: "r3", name: "Interactive Component Sandbox Lab", type: "LAB", url: "https://codesandbox.io" }
+          { id: "r1", name: "EDA with GenAI Guide", type: "DOC", url: "#" }
         ]
       },
       {
         taskNumber: 2,
-        title: "State Management & Custom Hooks",
-        objective: "Manage complex application state, custom context providers, and async data pipelines.",
-        task: "Implement a robust React Context store with persistence and optimistic updates for dynamic lists.",
+        title: "Predicting delinquency with AI",
+        learn: [
+          "Model selection for classification tasks.",
+          "Evaluating models for accuracy and fairness."
+        ],
+        do: [
+          "Design a predictive model to identify at-risk customers.",
+          "Train models using prepared datasets."
+        ],
         resources: [
-          { id: "r4", name: "State Machines in Modern Frontend", type: "DOC", url: "#" },
-          { id: "r5", name: "Custom Hooks Deep Dive", type: "VIDEO", url: "#" }
+          { id: "r2", name: "Model Selection", type: "DOC", url: "#" }
         ]
       },
       {
         taskNumber: 3,
-        title: "RESTful & GraphQL API Integration",
-        objective: "Connect frontend components to REST & GraphQL backend endpoints with error boundaries.",
-        task: "Build data fetching layers with caching, loading skeletons, and real-time pagination.",
-        resources: [
-          { id: "r6", name: "API Integration Standards", type: "DOC", url: "#" }
-        ]
+        title: "Business report and data storytelling for collections strategy",
+        learn: [
+          "How to translate technical findings into business insights.",
+          "Data storytelling best practices."
+        ],
+        do: [
+          "Turn AI insights into strategy.",
+          "Craft a stakeholder-ready business report to guide delinquency reduction efforts."
+        ],
+        resources: []
       },
       {
         taskNumber: 4,
-        title: "Form Validation & Complex UI Modals",
-        objective: "Handle accessible user inputs, client-side data validation schemas, and modal dialogs.",
-        task: "Construct multi-step interactive wizard forms with complete inline validation and file previews.",
-        resources: [
-          { id: "r7", name: "Accessible Forms Blueprint", type: "DOC", url: "#" }
-        ]
-      },
-      {
-        taskNumber: 5,
-        title: "Performance Optimization & Lazy Loading",
-        objective: "Optimize render cycles, code splitting, image assets, and lighthouse performance scores.",
-        task: "Perform performance audit on web portal and achieve >90 Lighthouse performance index.",
-        resources: [
-          { id: "r8", name: "Web Vitals Optimization", type: "DOC", url: "#" }
-        ]
-      },
-      {
-        taskNumber: 6,
-        title: "Automated Testing & End-to-End Flows",
-        objective: "Write unit tests for custom hooks, component UI snapshot tests, and flow assertions.",
-        task: "Implement Jest & React Testing Library test suites covering 80% code coverage.",
-        resources: [
-          { id: "r9", name: "Testing Library Guide", type: "DOC", url: "#" }
-        ]
-      },
-      {
-        taskNumber: 7,
-        title: "Security, Auth Tokens & CI/CD Pipeline",
-        objective: "Implement JWT handling, route guards, security headers, and GitHub Actions deployments.",
-        task: "Setup automated CI workflow building project bundle and running linter on pull requests.",
-        resources: [
-          { id: "r10", name: "CI/CD & Security Checklist", type: "DOC", url: "#" }
-        ]
-      },
-      {
-        taskNumber: 8,
-        title: "Capstone Capstone Delivery & Production Audit",
-        objective: "Finalize full IIP Capstone project, conduct peer review, and prepare final presentation.",
-        task: "Deploy production build to Vercel/Netlify and present final live project demonstration.",
-        resources: [
-          { id: "r11", name: "Capstone Guidelines", type: "DOC", url: "#" }
-        ]
+        title: "Implementing an AI-driven collections strategy",
+        learn: [
+          "Scalable outreach strategies.",
+          "Integrating AI models into business operations."
+        ],
+        do: [
+          "Design an AI-powered collections strategy to help Geldium engage high-risk customers.",
+          "Develop a framework for smart, fair, and scalable outreach."
+        ],
+        resources: []
       }
     ]
   },
   {
-    id: "iip-mentor-02",
-    title: "AI & Machine Learning Engineering",
+    id: "iip-deloitte-ib",
+    title: "Investment Banking",
     type: "MENTOR_GUIDED",
     badgeText: "Mentored Internship",
-    companyName: "DataCraft Labs",
-    companyLogo: "🧠",
+    companyName: "Deloitte",
+    companyLogo: "/src/logos/Logo_of_Deloitte.svg.webp",
+    companyDescription: "Deloitte is a leading global provider of audit and assurance, consulting, financial advisory, risk advisory, tax, and related services. With more than 150 years of hard work and commitment to making a real difference, our organization has grown in scale and diversity—yet our shared culture remains the same. We believe that we are only as good as the good we do. Our mission is to help our clients and our people excel. We developed this Mergers & Acquisitions (M&A) internship program to provide students with a realistic glimpse into the fast-paced, high-stakes world of investment banking and financial advisory. By participating in this program, you will develop a deep understanding of corporate valuation, financial modeling, and strategic advisory. We want to equip the next generation of financial professionals with the rigorous analytical skills and business acumen required to succeed in a competitive global market.",
     duration: "2 Months",
-    description: "Selective internship mentored by senior Data Scientists. Focuses on Python ML pipelines, NLP transformers, model deployment.",
+    description: "Work as an M&A analyst. Build financial models, value companies, and craft pitch books.",
     enrollmentMode: "Restricted — Trainer Selection based on Assessment",
-    mentorName: "Dr. Sarah Jenkins",
-    mentorRole: "Lead AI Researcher @ DataCraft",
+    mentorName: "Sarah Jenkins",
+    mentorRole: "VP, Investment Banking",
     orientationVideoUrl: "https://www.youtube.com/embed/aircAruvnKk",
-    orientationVideoTitle: "Trainer-Guided AI Internship Overview & Standards",
+    orientationVideoTitle: "Trainer-Guided IB Internship Overview",
     rules: [
-      "Complete the 8 tasks sequentially.",
-      "Submit the current task to instantly unlock the next one.",
-      "Only approved tasks count towards your final certificate score.",
-      "You have a flexible 2-month period to complete all tasks."
+      "Complete tasks sequentially.",
+      "Submit the current task to instantly unlock the next one."
     ],
     quizQuestions: [
       {
         id: "q1",
-        question: "Who approves enrollment for the Mentor-Guided Internship?",
-        options: [
-          "Automated instant enrollment",
-          "Trainer / Mentor based on performance assessment",
-          "Third-party company recruiter",
-          "No approval required"
-        ],
-        correctAnswerIndex: 1
+        question: "What is the primary method used to value a company based on its future cash flows?",
+        options: ["Discounted Cash Flow (DCF)", "Comparable Company Analysis", "Precedent Transactions", "LBO Analysis"],
+        correctAnswerIndex: 0
       }
     ],
     tasks: [
       {
         taskNumber: 1,
-        title: "Data Exploration & Feature Engineering",
-        objective: "Clean messy tabular data, compute statistical distributions, and engineer model features.",
-        task: "Perform EDA on 100k row dataset using Pandas/NumPy and export clean feature vector pipeline.",
-        resources: [{ id: "rm1", name: "Pandas Feature Engineering", type: "DOC", url: "#" }]
+        title: "Industry and Company Research",
+        learn: ["How to read 10-Ks.", "Market sizing techniques."],
+        do: ["Gather research on a target company.", "Write an industry overview report."],
+        resources: []
       },
       {
         taskNumber: 2,
-        title: "Supervised Learning Models & Benchmarks",
-        objective: "Implement Regression & Classification algorithms with hyperparameter tuning.",
-        task: "Train XGBoost and Random Forest models achieving >92% F1-score.",
-        resources: [{ id: "rm2", name: "Scikit-Learn Model Selection", type: "DOC", url: "#" }]
+        title: "Financial Statement Modeling",
+        learn: ["Projecting the 3 statements.", "Working capital scheduling."],
+        do: ["Build a 3-statement model for the target."],
+        resources: []
       },
       {
         taskNumber: 3,
-        title: "Deep Learning Foundations with PyTorch",
-        objective: "Understand neural networks, activation functions, loss curves, and PyTorch tensors.",
-        task: "Construct custom PyTorch Multi-Layer Perceptron for classification.",
-        resources: [{ id: "rm3", name: "PyTorch Deep Learning Fundamentals", type: "DOC", url: "#" }]
+        title: "Valuation Analysis",
+        learn: ["DCF fundamentals.", "Selecting comparables."],
+        do: ["Perform DCF and Trading Comps valuation."],
+        resources: []
       },
       {
         taskNumber: 4,
-        title: "Computer Vision & Convolutional Networks",
-        objective: "Build CNN architectures for image recognition and object classification.",
-        task: "Train ResNet fine-tuned model for medical image diagnostics dataset.",
-        resources: [{ id: "rm4", name: "Vision Transformers & CNNs", type: "DOC", url: "#" }]
+        title: "M&A Modeling",
+        learn: ["Accretion/Dilution analysis.", "Purchase price allocation."],
+        do: ["Build an M&A model assuming a 20% premium."],
+        resources: []
       },
       {
         taskNumber: 5,
-        title: "Natural Language Processing & Transformers",
-        objective: "Fine-tune HuggingFace Transformers for sentiment analysis and text summarization.",
-        task: "Deploy BERT tokenization pipeline with custom attention head analysis.",
-        resources: [{ id: "rm5", name: "HuggingFace Course", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 6,
-        title: "LLM Prompting, RAG & Vector Databases",
-        objective: "Build Retrieval-Augmented Generation (RAG) pipelines using ChromaDB and LangChain.",
-        task: "Construct domain-specific AI Q&A bot connected to custom PDF knowledge base.",
-        resources: [{ id: "rm6", name: "RAG Architecture Blueprint", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 7,
-        title: "Model Serving & FastAPI Integration",
-        objective: "Wrap ML models in REST APIs with Docker containerization.",
-        task: "Package PyTorch model into Dockerized FastAPI container with sub-100ms response time.",
-        resources: [{ id: "rm7", name: "FastAPI ML Microservices", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 8,
-        title: "Capstone Model Evaluation & Trainer Signoff",
-        objective: "Conduct final model drift analysis and present technical evaluation report to Mentor.",
-        task: "Deliver end-to-end AI project presentation and submit code repository.",
-        resources: [{ id: "rm8", name: "MLOps Production Checklist", type: "DOC", url: "#" }]
+        title: "Pitch Book Creation",
+        learn: ["Structuring a pitch.", "Formatting in PowerPoint."],
+        do: ["Create a 10-page pitch book recommending an acquisition."],
+        resources: []
       }
     ]
   },
   {
-    id: "iip-remote-03",
-    title: "Cloud DevOps & Microservices Engineering",
+    id: "iip-accenture-dm",
+    title: "Digital Marketing",
     type: "COMPANY_REMOTE",
-    badgeText: "Company Remote Internship",
-    companyName: "Nexus Cloud Corp",
-    companyLogo: "☁️",
+    badgeText: "Company Remote",
+    companyName: "Accenture",
+    companyLogo: "/src/logos/Accenture_logo.svg.webp",
+    companyDescription: "Accenture is a global professional services company with leading capabilities in digital, cloud, and security. Combining unmatched experience and specialized skills across more than 40 industries, we offer Strategy and Consulting, Technology and Operations services, and Accenture Song. Our purpose is to deliver on the promise of technology and human ingenuity. We embrace the power of change to create 360° value for our clients, people, and communities. We designed this Digital Marketing program because the landscape of customer engagement is constantly shifting. Brands need agile, data-savvy marketers who can navigate SEO, content strategy, and dynamic web analytics. This simulation provides a hands-on environment where you can master digital campaigns and performance tracking. We are committed to fostering innovative marketing talent capable of driving digital transformation and creating meaningful connections in an increasingly digital world.",
     duration: "2 Months",
-    description: "Work directly on live enterprise cloud infrastructure with virtual sprint meetings, real pull requests, and automated Kubernetes CI/CD workflows.",
+    description: "Develop digital marketing campaigns, manage SEO, and analyze web traffic.",
     enrollmentMode: "Corporate Selection — Remote Technical Screening",
     mentorName: "David Chen",
-    mentorRole: "Principal DevOps Lead @ Nexus Cloud",
+    mentorRole: "Marketing Director",
     orientationVideoUrl: "https://www.youtube.com/embed/aircAruvnKk",
-    orientationVideoTitle: "Corporate Remote Internship Protocol & Security Briefing",
-    rules: [
-      "Complete the sequential case study deliverables.",
-      "Submit pull requests and container deployment configurations.",
-      "Only company mentor-approved deliverables count towards credentialing.",
-      "Follow corporate remote work ethics, branch protection, and daily standup notes."
-    ],
+    orientationVideoTitle: "Digital Marketing Overview",
+    rules: ["Complete tasks sequentially."],
     quizQuestions: [
       {
-        id: "qr1",
-        question: "How are deliverables reviewed in Company Remote Internship?",
-        options: [
-          "Peer review only",
-          "Automated grading without feedback",
-          "Corporate mentor code review on pull requests",
-          "No evaluation required"
-        ],
-        correctAnswerIndex: 2
+        id: "q1",
+        question: "What does SEO stand for?",
+        options: ["Search Engine Optimization", "Site Engagement Operation", "Sales Enablement Organigram", "Social Expansion Outreach"],
+        correctAnswerIndex: 0
       }
     ],
     tasks: [
       {
         taskNumber: 1,
-        title: "Containerization & Docker Multi-Stage Builds",
-        objective: "Build secure and optimized Docker containers for microservices architecture.",
-        task: "Construct minimal production Dockerfile for Node/Go service with non-root security context.",
-        resources: [{ id: "rc1", name: "Docker Production Security Guide", type: "DOC", url: "#" }]
+        title: "SEO Audit and Keyword Research",
+        learn: ["Keyword mapping.", "Technical SEO audits."],
+        do: ["Perform an SEO audit on a demo site.", "Identify top 10 target keywords."],
+        resources: []
       },
       {
         taskNumber: 2,
-        title: "Infrastructure as Code (Terraform) Automation",
-        objective: "Provision cloud infrastructure declaratively using Terraform and state locking.",
-        task: "Author reusable Terraform modules to launch VPC, subnets, and security groups on AWS.",
-        resources: [{ id: "rc2", name: "Terraform Best Practices", type: "DOC", url: "#" }]
+        title: "Content Strategy Planning",
+        learn: ["Content calendars.", "Audience persona building."],
+        do: ["Create a 3-month content calendar."],
+        resources: []
       },
       {
         taskNumber: 3,
-        title: "Kubernetes Cluster Architecture & Helm Charts",
-        objective: "Deploy high-availability application workloads with Kubernetes Deployments & Ingress.",
-        task: "Package and deploy microservices using Helm charts with horizontal pod autoscaling (HPA).",
-        resources: [{ id: "rc3", name: "Kubernetes in Production", type: "DOC", url: "#" }]
+        title: "Paid Campaign Setup (PPC)",
+        learn: ["Google Ads campaign structure.", "Bidding strategies."],
+        do: ["Draft a Google Ads campaign structure with ad copy."],
+        resources: []
       },
       {
         taskNumber: 4,
-        title: "Enterprise CI/CD Pipelines & GitOps",
-        objective: "Automate build, vulnerability scanning, and ArgoCD sync for zero-downtime rollouts.",
-        task: "Configure GitHub Actions pipeline with Trivy vulnerability scanning and automated staging deploy.",
-        resources: [{ id: "rc4", name: "GitOps & ArgoCD Pipeline", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 5,
-        title: "Observability, Prometheus Metrics & Grafana Dashboards",
-        objective: "Implement cluster-wide monitoring, distributed tracing, and critical alert policies.",
-        task: "Deploy Prometheus stack with custom alerts and Grafana dashboards for latency and error rates.",
-        resources: [{ id: "rc5", name: "SRE Observability Standards", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 6,
-        title: "Production Infrastructure Audit & Enterprise Signoff",
-        objective: "Conduct security benchmark audit and present infrastructure reliability capstone to team lead.",
-        task: "Deliver production cluster disaster recovery simulation and submit final architecture documentation.",
-        resources: [{ id: "rc6", name: "Cloud Architecture Review Framework", type: "DOC", url: "#" }]
+        title: "Analytics and Reporting",
+        learn: ["Google Analytics basics.", "Creating marketing dashboards."],
+        do: ["Build a monthly performance report summarizing traffic and conversions."],
+        resources: []
       }
     ]
   },
   {
-    id: "iip-onprem-04",
-    title: "Cybersecurity Operations & Threat Hunting",
+    id: "iip-demo-onprem",
+    title: "Enterprise Security",
     type: "COMPANY_ON_PREMISES",
-    badgeText: "Company On premises Internship",
-    companyName: "Fortress Cyber Labs",
-    companyLogo: "🛡️",
+    badgeText: "On-Premises Internship",
+    companyName: "Demo Company",
+    companyLogo: "/src/logos/IBM_logo.svg.webp",
+    companyDescription: "IBM (International Business Machines Corporation) is a multinational technology corporation known for its hardware, software, cloud-based services, and cognitive computing. As one of the world's oldest and largest technology companies, IBM has a long history of innovation, from the invention of the ATM and the floppy disk to the development of Watson, our pioneering AI platform. We are dedicated to creating technologies that drive progress and address some of the world's most complex problems. This on-premises security operations internship was created to immerse students in the critical field of cybersecurity and IT infrastructure management. We believe that hands-on, practical experience in a simulated corporate environment is the best way to prepare future tech leaders. Through this program, we aim to cultivate a resilient and highly skilled workforce capable of protecting enterprise networks and driving technological advancement securely.",
     duration: "2 Months",
-    description: "Hands-on corporate campus internship conducted within on-premises security operations centers (SOC). Involves packet analysis, threat defense, and incident response.",
-    enrollmentMode: "Campus In-Person — Background Verification & In-Office Placement",
-    mentorName: "Marcus Vance",
-    mentorRole: "Director of Threat Intelligence @ Fortress Labs",
+    description: "Hands-on corporate campus internship conducted within on-premises security operations centers.",
+    enrollmentMode: "Campus In-Person",
     orientationVideoUrl: "https://www.youtube.com/embed/aircAruvnKk",
-    orientationVideoTitle: "On-Premises SOC Lab Protocols & Clearance",
-    rules: [
-      "In-person participation at partner campus SOC labs.",
-      "Complete hands-on incident response and network threat defense tasks.",
-      "Submissions are evaluated by on-premises security directors.",
-      "Strict non-disclosure agreement (NDA) and air-gapped lab compliance."
-    ],
+    orientationVideoTitle: "On-Premises SOC Lab Protocols",
+    rules: ["In-person participation at partner campus SOC labs."],
     quizQuestions: [
       {
-        id: "qo1",
+        id: "q1",
         question: "Where is the Company On-Premises Internship conducted?",
-        options: [
-          "Fully asynchronous home study",
-          "Partner corporate campus and on-premises security operations center",
-          "Public coffee shops",
-          "No physical presence needed"
-        ],
+        options: ["Fully asynchronous home study", "Partner corporate campus", "Public coffee shops", "No physical presence needed"],
         correctAnswerIndex: 1
       }
     ],
     tasks: [
       {
         taskNumber: 1,
-        title: "Enterprise Network Topology & Packet Inspection",
-        objective: "Analyze real enterprise network PCAP traffic and detect unauthorized protocol behavior.",
-        task: "Perform Wireshark packet analysis on enterprise packet captures to isolate beaconing malware.",
-        resources: [{ id: "ro1", name: "SOC Network Traffic Analysis", type: "DOC", url: "#" }]
+        title: "Enterprise Network Topology",
+        learn: ["Network architecture basics.", "Packet analysis."],
+        do: ["Analyze enterprise PCAP traffic.", "Detect unauthorized protocol behavior."],
+        resources: []
       },
       {
         taskNumber: 2,
-        title: "SIEM Engineering with Splunk & Elastic",
-        objective: "Aggregate audit logs, write correlation rules, and triage alert queues.",
-        task: "Configure Splunk dashboard with Sigma detection rules for brute-force and privilege escalation.",
-        resources: [{ id: "ro2", name: "Splunk Query Language Masterclass", type: "DOC", url: "#" }]
+        title: "SIEM Engineering",
+        learn: ["Log aggregation.", "Alert triage."],
+        do: ["Configure a SIEM dashboard."],
+        resources: []
       },
       {
         taskNumber: 3,
-        title: "Vulnerability Assessment & Penetration Testing",
-        objective: "Audit host configurations, identify unpatched vulnerabilities, and draft remediation plans.",
-        task: "Conduct vulnerability assessment using Nessus/Nmap and produce executive executive remediation report.",
-        resources: [{ id: "ro3", name: "OWASP & CVE Exploitation Manual", type: "DOC", url: "#" }]
+        title: "Vulnerability Assessment",
+        learn: ["Nessus scanning.", "Remediation planning."],
+        do: ["Conduct vulnerability assessment.", "Produce executive report."],
+        resources: []
       },
       {
         taskNumber: 4,
-        title: "Incident Response & Digital Forensics",
-        objective: "Acquire memory dumps, reconstruct timeline of attack, and isolate compromised endpoints.",
-        task: "Perform memory forensics with Volatility to extract injected DLLs and malicious process trees.",
-        resources: [{ id: "ro4", name: "Digital Forensics Incident Handbook", type: "DOC", url: "#" }]
-      },
-      {
-        taskNumber: 5,
-        title: "Enterprise SOC Defense Capstone & Director Signoff",
-        objective: "Participate in live Blue Team attack-defense drill and present incident response post-mortem.",
-        task: "Defend on-premises mock enterprise network against simulated APT attack and deliver final defense dossier.",
-        resources: [{ id: "ro5", name: "Blue Team Operational Defense Manual", type: "DOC", url: "#" }]
+        title: "Incident Response",
+        learn: ["Memory forensics.", "Containment strategies."],
+        do: ["Perform memory forensics to extract malicious processes."],
+        resources: []
       }
     ]
   }
@@ -415,7 +336,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
 
 export function createDefaultEnrollmentState(programId: string): EnrollmentState {
   const selectedProgram = MOCK_INTERNSHIPS.find(p => p.id === programId) || MOCK_INTERNSHIPS[0];
-  const totalTasks = selectedProgram?.tasks?.length || 8;
+  const totalTasks = selectedProgram?.tasks?.length || 4;
   const taskSubmissions: Record<number, TaskSubmission> = {};
 
   for (let t = 1; t <= totalTasks; t++) {
@@ -428,8 +349,8 @@ export function createDefaultEnrollmentState(programId: string): EnrollmentState
 
   return {
     programId,
-    studentName: "Alex Morgan",
-    studentEmail: "alex.morgan@wingz.edu",
+    studentName: "Rohan Patil",
+    studentEmail: "shirish@example.com",
     enrolledAt: "2026-09-01",
     quizPassed: true,
     quizScore: 100,

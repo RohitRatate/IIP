@@ -129,7 +129,7 @@ export const TimelineStepper: React.FC<TimelineStepperProps> = ({ activeTaskTab,
                     {taskConfig.title}
                   </h4>
                   <p style={{ fontSize: '0.82rem', color: '#718096', marginTop: '2px', lineHeight: 1.4 }}>
-                    {taskConfig.objective}
+                    {taskConfig.learn?.[0]}
                   </p>
                 </div>
               </div>
@@ -253,11 +253,11 @@ const TaskModal: React.FC<{ taskNumber: number; onClose: () => void }> = ({ task
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', marginBottom: '4px' }}>
             Objective
           </div>
-          <p style={{ fontSize: '0.85rem', color: '#4a5568', lineHeight: 1.5 }}>{taskConfig.objective}</p>
+          <p style={{ fontSize: '0.85rem', color: '#4a5568', lineHeight: 1.5 }}>{taskConfig.learn?.[0]}</p>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#718096', textTransform: 'uppercase', marginTop: '10px', marginBottom: '4px' }}>
             Deliverable
           </div>
-          <p style={{ fontSize: '0.85rem', color: '#1a1a2e', fontWeight: 600, lineHeight: 1.5 }}>{taskConfig.task}</p>
+          <p style={{ fontSize: '0.85rem', color: '#1a1a2e', fontWeight: 600, lineHeight: 1.5 }}>{taskConfig.do?.[0]}</p>
         </div>
 
         {/* Current Status Box */}

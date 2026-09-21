@@ -3,6 +3,7 @@ import { InternshipProvider, useInternship } from './context/InternshipContext';
 import { Header } from './components/Header';
 import { DemoToolbar } from './components/DemoToolbar';
 import { CatalogScreen } from './components/CatalogScreen';
+import { CompanyDetailScreen } from './components/CompanyDetailScreen';
 import { OnboardingModal } from './components/OnboardingModal';
 import { StudentDashboard } from './components/StudentDashboard';
 import { CertificateViewer } from './components/CertificateViewer';
@@ -18,6 +19,7 @@ const MainApp: React.FC = () => {
 
       <main className="main-content">
         {activeView === 'CATALOG' && <CatalogScreen />}
+        {activeView === 'COMPANY_DETAIL' && <CompanyDetailScreen />}
         {activeView === 'ONBOARDING' && <OnboardingModal />}
         {activeView === 'DASHBOARD' && <StudentDashboard />}
         {activeView === 'CERTIFICATE' && <CertificateViewer />}

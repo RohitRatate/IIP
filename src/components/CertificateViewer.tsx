@@ -1,125 +1,239 @@
-import React from 'react';
+import { ArrowLeft, Award, Copy, Download, Linkedin, Star } from 'lucide-react';
+import React, { useMemo } from 'react';
 import { useInternship } from '../context/InternshipContext';
-import { Award, Printer, ArrowLeft, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+
 
 export const CertificateViewer: React.FC = () => {
   const { enrollment, selectedProgram, setActiveView } = useInternship();
-  const certId = enrollment.certificateId || `WNGZ-IIP-2026-8849`;
+
+  const totalTasksCount = selectedProgram.tasks?.length || 4;
+  const approvedTasksCount = Object.values(enrollment.taskSubmissions || {}).filter(
+    (s) => s.status === 'APPROVED'
+  ).length;
+  const isFullyCompleted = approvedTasksCount === totalTasksCount;
+  const scorePercent = Math.round((approvedTasksCount / totalTasksCount) * 100);
+
+  // Use the local logo directly from selectedProgram
+  const companyLogoUrl = selectedProgram.companyLogo;
+
+  // Stable certificate ID (based on enrollment, not random on every render)
+  const certId = useMemo(() => enrollment.certificateId || `CERT-${Date.now().toString(36).toUpperCase()}`, [enrollment.certificateId]);
+
+  const skills = Array.from(new Set(
+    selectedProgram.tasks?.flatMap(task => task.learn || []) || []
+  ));
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '22px' }}>
-      {/* Action Bar */}
-      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
-        <button onClick={() => setActiveView('DASHBOARD')} className="btn-secondary"><ArrowLeft size={15} /> Back to Dashboard</button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ background: 'rgba(141, 198, 63, 0.15)', color: '#4a7a10', padding: '4px 14px', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 700, border: '1px solid rgba(141, 198, 63, 0.4)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <ShieldCheck size={13} /> Certificate Verified & Issued
-          </span>
-          <button onClick={() => window.print()} className="btn-primary"><Printer size={15} /> Print / Save PDF</button>
-        </div>
+    <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+
+      {/* Back Button */}
+      <button onClick={() => setActiveView('DASHBOARD')} className="btn-secondary" style={{ width: 'fit-content' }}>
+        <ArrowLeft size={15} /> Back to Dashboard
+      </button>
+
+      {/* Header */}
+      <div>
+        <h1 style={{ fontSize: '2.8rem', fontWeight: 700, color: '#1a56db', marginBottom: '8px' }}>
+          Great work, {enrollment.studentName.split(' ')[0]}!
+        </h1>
+        <p style={{ fontSize: '1.1rem', color: '#4a5568' }}>
+          {isFullyCompleted
+            ? 'You have completed all tasks. Your certificate is ready below.'
+            : `You completed ${approvedTasksCount} of ${totalTasksCount} tasks. Your score-based certificate is ready below.`}
+        </p>
       </div>
 
-      {/* Certificate Canvas */}
+      {/* ─── CERTIFICATE VISUAL ─── */}
       <div id="certificate-print-area" style={{
-        background: '#ffffff',
-        border: '3px solid #e2e8f0',
-        borderRadius: 'var(--radius-xl)',
-        padding: '48px 44px',
-        boxShadow: '0 20px 60px -12px rgba(0, 0, 0, 0.15)',
-        position: 'relative', overflow: 'hidden',
-        fontFamily: "'Plus Jakarta Sans', sans-serif"
+        background: '#fff',
+        border: '2px solid #e2e8f0',
+        borderRadius: '16px',
+        padding: '56px 60px',
+        boxShadow: '0 24px 64px -12px rgba(0,0,0,0.14)',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
-        {/* Top decorative green stripe */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '7px', background: 'linear-gradient(90deg, #8dc63f 0%, #5a9a1a 50%, #1a1a2e 100%)' }} />
+        {/* Top color bar */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, #1a56db 0%, #3b82f6 60%, #8dc63f 100%)' }} />
 
-        {/* Corner accent */}
-        <div style={{ position: 'absolute', top: '20px', right: '20px', width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(141, 198, 63, 0.1) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        {/* Corner watermark */}
+        <div style={{ position: 'absolute', top: 20, right: 20, opacity: 0.04 }}>
+          <Award size={160} />
+        </div>
 
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '2px solid #f1f5f9', paddingBottom: '24px', marginBottom: '36px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'linear-gradient(135deg, #8dc63f 0%, #5a9a1a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(141, 198, 63, 0.35)' }}>
-              <Sparkles color="#ffffff" size={28} />
+        {/* Header row: company logo left, issuer right */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{
+              width: '72px', height: '72px', background: '#fff',
+              border: '1px solid #e2e8f0', borderRadius: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'
+            }}>
+              <img src={companyLogoUrl} alt={selectedProgram.companyName} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
             </div>
             <div>
-              <div style={{ fontSize: '1.7rem', fontWeight: 800, color: '#1a1a2e', letterSpacing: '-0.02em' }}>Wingz Tech Academy</div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#8dc63f', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Integrated Internship Program (IIP)</div>
+              <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#1a1a2e' }}>{selectedProgram.companyName}</div>
+              <div style={{ fontSize: '0.82rem', color: '#718096', marginTop: '2px' }}>{selectedProgram.title}</div>
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.72rem', color: '#9ea8b3', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Certificate ID</div>
-            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1a1a2e', fontFamily: 'monospace' }}>{certId}</div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#8dc63f', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {isFullyCompleted ? 'Certificate of Completion' : 'Certificate of Participation'}
+            </div>
+            <div style={{ fontSize: '0.78rem', color: '#718096', marginTop: '4px', fontFamily: 'monospace' }}>{certId}</div>
           </div>
         </div>
 
-        {/* Main content */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{ fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#8dc63f', marginBottom: '12px' }}>
-            OFFICIAL CERTIFICATE OF COMPLETION
-          </div>
-          <p style={{ fontSize: '1rem', color: '#718096', marginBottom: '16px' }}>This is to certify that</p>
-          <h1 style={{
-            fontSize: '2.6rem', fontWeight: 800, color: '#1a1a2e',
-            borderBottom: '3px solid #8dc63f', display: 'inline-block',
-            paddingBottom: '8px', marginBottom: '20px', letterSpacing: '-0.01em'
+        {/* Main text */}
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <p style={{ fontSize: '1rem', color: '#718096', marginBottom: '12px', letterSpacing: '0.04em' }}>
+            THIS IS TO CERTIFY THAT
+          </p>
+          <h2 style={{
+            fontSize: '3.2rem', fontWeight: 800, color: '#1a1a2e', margin: '0 0 20px 0',
+            borderBottom: '3px solid #1a56db', display: 'inline-block', paddingBottom: '8px'
           }}>
             {enrollment.studentName}
-          </h1>
-          <p style={{ fontSize: '1rem', color: '#4a5568', maxWidth: '620px', margin: '0 auto', lineHeight: 1.7 }}>
-            has successfully completed the intensive <strong style={{ color: '#1a1a2e' }}>{selectedProgram.title}</strong> ({selectedProgram.type.replace('_', ' ')}) internship under <strong style={{ color: '#1a1a2e' }}>{selectedProgram.companyName}</strong>, fulfilling all required case study milestones and capstone project deliverables.
+          </h2>
+          <p style={{ fontSize: '1.05rem', color: '#4a5568', maxWidth: '580px', margin: '0 auto', lineHeight: 1.7 }}>
+            has {isFullyCompleted ? 'successfully completed' : 'participated in'} the <strong style={{ color: '#1a1a2e' }}>{selectedProgram.title}</strong> internship program offered by <strong style={{ color: '#1a1a2e' }}>{selectedProgram.companyName}</strong>.
           </p>
         </div>
 
-        {/* Metadata */}
+        {/* Score & metadata strip */}
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px',
-          background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-lg)', padding: '18px', textAlign: 'center', marginBottom: '40px'
+          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0',
+          background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px',
+          overflow: 'hidden', marginBottom: '40px'
         }}>
-          <div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#9ea8b3', textTransform: 'uppercase' }}>Internship Track</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1a1a2e', marginTop: '4px' }}>{selectedProgram.type.replace('_', ' ')}</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#9ea8b3', textTransform: 'uppercase' }}>Partner Organization</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#5a9a1a', marginTop: '4px' }}>{selectedProgram.companyName}</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#9ea8b3', textTransform: 'uppercase' }}>Issued Date</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1a1a2e', marginTop: '4px' }}>September 2026</div>
-          </div>
+          {[
+            { label: 'Score', value: `${approvedTasksCount} / ${totalTasksCount}` },
+            { label: 'Percentage', value: `${scorePercent}%` },
+            { label: 'Duration', value: selectedProgram.duration },
+            { label: 'Issued', value: 'September 2026' },
+          ].map((item, idx) => (
+            <div key={idx} style={{
+              padding: '16px 20px', textAlign: 'center',
+              borderRight: idx < 3 ? '1px solid #e2e8f0' : 'none'
+            }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#9ea8b3', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1a1a2e', marginTop: '4px' }}>{item.value}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Stars for score */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '40px' }}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star key={star} size={24}
+              fill={star <= Math.ceil(scorePercent / 20) ? '#f59e0b' : 'none'}
+              color={star <= Math.ceil(scorePercent / 20) ? '#f59e0b' : '#e2e8f0'}
+            />
+          ))}
         </div>
 
         {/* Signatures */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderTop: '2px solid #f1f5f9', paddingTop: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: '28px' }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: 'cursive', fontSize: '1.5rem', color: '#5a9a1a', marginBottom: '4px' }}>Dr. Sarah Jenkins</div>
-            <div style={{ width: '160px', height: '2px', background: '#8dc63f', margin: '0 auto 6px auto' }} />
-            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#1a1a2e' }}>Lead Trainer & Mentor</div>
-            <div style={{ fontSize: '0.7rem', color: '#9ea8b3' }}>Wingz IIP Academic Board</div>
+            <div style={{ fontFamily: 'cursive', fontSize: '1.4rem', color: '#1a56db', marginBottom: '4px' }}>Dr. Priya Sharma</div>
+            <div style={{ width: '140px', height: '2px', background: '#1a56db', margin: '0 auto 6px' }} />
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#1a1a2e' }}>Program Director</div>
+            <div style={{ fontSize: '0.7rem', color: '#718096' }}>Wingz IIP Academic Board</div>
           </div>
 
-          {/* Seal */}
           <div style={{
-            width: '82px', height: '82px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #8dc63f 0%, #5a9a1a 100%)',
+            width: '72px', height: '72px', borderRadius: '50%',
+            background: 'linear-gradient(135deg, #1a56db, #3b82f6)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 6px 24px rgba(141, 198, 63, 0.45)', border: '4px solid #d4edaa'
+            boxShadow: '0 6px 20px rgba(26,86,219,0.35)', border: '4px solid #bfdbfe'
           }}>
-            <Award size={32} color="#ffffff" />
-            <span style={{ fontSize: '0.58rem', fontWeight: 800, color: '#ffffff', textTransform: 'uppercase' }}>VERIFIED</span>
+            <Award size={28} color="#fff" />
+            <span style={{ fontSize: '0.52rem', fontWeight: 800, color: '#fff', textTransform: 'uppercase' }}>VERIFIED</span>
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: 'cursive', fontSize: '1.5rem', color: '#5a9a1a', marginBottom: '4px' }}>Alex Rivera</div>
-            <div style={{ width: '160px', height: '2px', background: '#8dc63f', margin: '0 auto 6px auto' }} />
-            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#1a1a2e' }}>Industry Partner Lead</div>
-            <div style={{ fontSize: '0.7rem', color: '#9ea8b3' }}>{selectedProgram.companyName}</div>
+            <div style={{ fontFamily: 'cursive', fontSize: '1.4rem', color: '#1a56db', marginBottom: '4px' }}>{selectedProgram.mentorName || 'Alex Rivera'}</div>
+            <div style={{ width: '140px', height: '2px', background: '#1a56db', margin: '0 auto 6px' }} />
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#1a1a2e' }}>Industry Partner Lead</div>
+            <div style={{ fontSize: '0.7rem', color: '#718096' }}>{selectedProgram.companyName}</div>
           </div>
         </div>
 
-        {/* Bottom green stripe */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '5px', background: 'linear-gradient(90deg, #1a1a2e 0%, #5a9a1a 50%, #8dc63f 100%)' }} />
+        {/* Bottom bar */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '5px', background: 'linear-gradient(90deg, #8dc63f 0%, #3b82f6 50%, #1a56db 100%)' }} />
       </div>
+
+      {/* ─── DOWNLOAD BUTTON ─── */}
+      <div style={{ display: 'flex', gap: '16px' }}>
+        <button
+          onClick={handlePrint}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: '#1a56db', color: '#fff', border: 'none',
+            borderRadius: '8px', padding: '14px 28px', fontSize: '1rem', fontWeight: 700,
+            cursor: 'pointer', boxShadow: '0 4px 14px rgba(26,86,219,0.3)'
+          }}
+        >
+          <Download size={20} /> Download Certificate (PDF)
+        </button>
+        <button
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: '#fff', color: '#1a56db', border: '2px solid #1a56db',
+            borderRadius: '8px', padding: '14px 28px', fontSize: '1rem', fontWeight: 700,
+            cursor: 'pointer'
+          }}
+        >
+          <Linkedin size={20} /> Add to LinkedIn
+        </button>
+      </div>
+
+      {/* ─── SKILLS & INFO CARDS ─── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+        {/* Skills */}
+        <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '16px' }}>Skills earned</h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+            {skills.length > 0 ? skills.map((skill, idx) => (
+              <div key={idx} style={{
+                border: '1px solid #1a56db', color: '#1a56db', padding: '4px 14px',
+                borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase'
+              }}>
+                {skill}
+              </div>
+            )) : (
+              <div style={{ color: '#718096', fontSize: '0.9rem' }}>No specific skills listed.</div>
+            )}
+          </div>
+          <button style={{ color: '#1a56db', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.9rem' }}>
+            <Copy size={16} /> Copy to clipboard
+          </button>
+        </div>
+
+        {/* Summary */}
+        <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '16px' }}>Internship summary</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {[
+              { label: 'Program', value: selectedProgram.title },
+              { label: 'Company', value: selectedProgram.companyName },
+              { label: 'Type', value: selectedProgram.type.replace(/_/g, ' ') },
+              { label: 'Tasks completed', value: `${approvedTasksCount} of ${totalTasksCount}` },
+              { label: 'Final score', value: `${scorePercent}%` },
+            ].map((item) => (
+              <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
+                <span style={{ color: '#718096' }}>{item.label}</span>
+                <span style={{ fontWeight: 700, color: '#1a1a2e' }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { ArrowRight, Award, Building, Building2, CheckCircle2, Clock, HelpCircle, ShieldAlert, Sparkles, UserCheck, Users, Video } from 'lucide-react';
+import { ArrowRight, Award, Building, Building2, Clock, Sparkles, UserCheck, Users } from 'lucide-react';
 import React from 'react';
 import { useInternship } from '../context/InternshipContext';
 import { InternshipProgram } from '../data/internshipsData';
@@ -8,7 +8,7 @@ export const CatalogScreen: React.FC = () => {
 
   const handleSelectProgram = (program: InternshipProgram) => {
     setSelectedProgramById(program.id);
-    setActiveView('ONBOARDING');
+    setActiveView('COMPANY_DETAIL');
   };
 
   const getTypeIcon = (type: string) => {
@@ -90,12 +90,13 @@ export const CatalogScreen: React.FC = () => {
             {/* Card Header */}
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '18px' }}>
               <div style={{
-                width: '52px', height: '52px', borderRadius: '14px',
-                background: 'rgba(141, 198, 63, 0.08)',
-                border: '1px solid rgba(141, 198, 63, 0.25)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem'
+                width: '52px', height: '52px', borderRadius: '10px',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                flexShrink: 0
               }}>
-                {prog.companyLogo}
+                <img src={prog.companyLogo} alt={prog.companyName} style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
               </div>
               <span style={{
                 ...getTypeBadgeStyle(prog.type),
@@ -134,24 +135,7 @@ export const CatalogScreen: React.FC = () => {
               )}
             </div>
 
-            {/* Features list */}
-            <div style={{
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: 'var(--radius-md)',
-              padding: '14px', marginBottom: '20px'
-            }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#9ea8b3', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Program Workflow
-              </div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem', color: '#718096' }}>
-                {['Orientation & Pre-Quiz', 'SOD Morning + EOD Evening (5 Days)', 'Milestone Task Submission & Review', 'Sequential Milestone Unlocking'].map((item) => (
-                  <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CheckCircle2 size={13} color="#8dc63f" />{item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+
 
             <button
               onClick={() => handleSelectProgram(prog)}
@@ -165,32 +149,6 @@ export const CatalogScreen: React.FC = () => {
         ))}
       </div>
 
-      {/* 6-Step Journey Infographic */}
-      <div className="glass-card">
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={18} color="#8dc63f" /> Standard 8-Week IIP Student Journey
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', textAlign: 'center' }}>
-          {[
-            { step: '01', title: 'Details & Intro', desc: 'Browse requirements & company overview', icon: <Video size={20} color="#8dc63f" /> },
-            { step: '02', title: 'Rules & Quiz', desc: 'Orientation video & eligibility quiz', icon: <HelpCircle size={20} color="#5a9a1a" /> },
-            { step: '03', title: 'Week 1 Unlocks', desc: 'Access weekly objective & resources', icon: <Clock size={20} color="#f59e0b" /> },
-            { step: '04', title: 'Daily Updates', desc: 'SOD morning + EOD evening (5 Days)', icon: <CheckCircle2 size={20} color="#8dc63f" /> },
-            { step: '05', title: 'Week 8 Complete', desc: 'Sequential unlocks after approval', icon: <Award size={20} color="#5a9a1a" /> },
-            { step: '06', title: 'Certificate', desc: 'Generate & download verified credential', icon: <Sparkles size={20} color="#8dc63f" /> }
-          ].map((item) => (
-            <div key={item.step} style={{
-              background: '#f8fafc', border: '1px solid #e2e8f0',
-              borderRadius: 'var(--radius-md)', padding: '16px 10px'
-            }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#8dc63f', marginBottom: '6px', textTransform: 'uppercase' }}>STEP {item.step}</div>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>{item.icon}</div>
-              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '4px' }}>{item.title}</div>
-              <div style={{ fontSize: '0.72rem', color: '#718096' }}>{item.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import {
 } from '../data/internshipsData';
 
 export type UserRole = 'STUDENT' | 'TRAINER' | 'COMPANY' | 'ADMIN';
-export type ActiveView = 'CATALOG' | 'ONBOARDING' | 'DASHBOARD' | 'CERTIFICATE';
+export type ActiveView = 'CATALOG' | 'COMPANY_DETAIL' | 'ONBOARDING' | 'DASHBOARD' | 'CERTIFICATE';
 
 interface InternshipContextType {
   role: UserRole;
