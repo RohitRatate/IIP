@@ -28,6 +28,7 @@ import ibmLogo from '../logos/IBM_logo.svg.webp';
 export interface InternshipProgram {
   id: string;
   title: string;
+  domain: string;
   type: 'SELF_PLACED' | 'MENTOR_GUIDED' | 'COMPANY_REMOTE' | 'COMPANY_ON_PREMISES';
   badgeText: string;
   companyName: string;
@@ -75,6 +76,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
   {
     id: "iip-tata-genai",
     title: "GenAI Powered Data Analytics",
+    domain: "Data Science & Analytics",
     type: "SELF_PLACED",
     badgeText: "Self-Paced Internship",
     companyName: "Tata",
@@ -167,6 +169,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
   {
     id: "iip-deloitte-ib",
     title: "Investment Banking",
+    domain: "Finance & Banking",
     type: "MENTOR_GUIDED",
     badgeText: "Mentored Internship",
     companyName: "Deloitte",
@@ -232,6 +235,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
   {
     id: "iip-accenture-dm",
     title: "Digital Marketing",
+    domain: "Marketing & Communications",
     type: "COMPANY_REMOTE",
     badgeText: "Company Remote",
     companyName: "Accenture",
@@ -287,6 +291,7 @@ export const MOCK_INTERNSHIPS: InternshipProgram[] = [
   {
     id: "iip-demo-onprem",
     title: "Enterprise Security",
+    domain: "Cybersecurity & IT Infrastructure",
     type: "COMPANY_ON_PREMISES",
     badgeText: "On-Premises Internship",
     companyName: "Demo Company",
